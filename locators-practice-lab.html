@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playwright Locator Lab · Real‑world practice</title>
+  <!-- Font & Icons (clean, modern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f9fc;
+      color: #1e293b;
+      padding: 24px;
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 20px 60px -12px rgba(0,20,30,0.15);
+      overflow: hidden;
+      padding: 0 32px 40px;
+    }
+
+    /* ---- navigation ---- */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0 16px;
+      border-bottom: 1px solid #e9edf2;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: -0.3px;
+      color: #0b2b4a;
+    }
+    .logo i {
+      color: #2563eb;
+      font-size: 1.7rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      font-weight: 500;
+      color: #334155;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      font-size: 0.95rem;
+      transition: color 0.1s;
+      padding: 4px 0;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links a:hover {
+      color: #2563eb;
+      border-bottom-color: #2563eb;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .nav-actions .btn-outline {
+      background: transparent;
+      border: 1px solid #d0d8e3;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #1e293b;
+      transition: 0.15s;
+      cursor: default;
+    }
+    .nav-actions .btn-outline i {
+      margin-right: 6px;
+    }
+
+    /* ---- page header ---- */
+    .page-header {
+      margin: 24px 0 20px;
+    }
+    .page-header h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      color: #0f2b44;
+    }
+    .page-header p {
+      color: #475569;
+      max-width: 650px;
+      margin-top: 6px;
+      font-size: 0.98rem;
+    }
+
+    /* ---- cards & sections ---- */
+    .section-card {
+      background: #ffffff;
+      border-radius: 24px;
+      border: 1px solid #eef2f6;
+      padding: 24px 28px;
+      margin: 28px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      transition: 0.15s;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #0f2b44;
+    }
+    .section-title i {
+      color: #2563eb;
+      font-size: 1.2rem;
+      width: 28px;
+      text-align: center;
+    }
+    .section-title small {
+      font-weight: 400;
+      font-size: 0.75rem;
+      background: #eef2f6;
+      padding: 2px 12px;
+      border-radius: 30px;
+      color: #475569;
+      margin-left: 6px;
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    /* ---- form elements ---- */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: #1e293b;
+    }
+    .form-group .hint {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d8e0e9;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      background: #fafcff;
+      transition: 0.1s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+      border-color: transparent;
+      background: white;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: default;
+      transition: 0.1s;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-primary i {
+      margin-right: 6px;
+    }
+    .btn-secondary {
+      background: #eef2f6;
+      color: #1e293b;
+    }
+    .btn-secondary i {
+      margin-right: 6px;
+    }
+    .btn-outline-sm {
+      background: transparent;
+      border: 1px solid #d0d8e3;
+      padding: 4px 16px;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.8rem;
+      cursor: default;
+      color: #1e293b;
+    }
+
+    /* ---- tables ---- */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid #e9edf2;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      background: #f8fafc;
+      font-weight: 600;
+      color: #1e293b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eef2f6;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .status-badge {
+      background: #dbeafe;
+      color: #1e4a7a;
+      padding: 2px 12px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-badge.success {
+      background: #d1fae5;
+      color: #0b5e42;
+    }
+
+    /* ---- cards / product ---- */
+    .product-card {
+      border: 1px solid #eef2f6;
+      border-radius: 20px;
+      padding: 16px 18px 20px;
+      background: #fafcff;
+      transition: 0.1s;
+    }
+    .product-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 14px;
+      background: #e9edf2;
+    }
+    .product-card h4 {
+      margin: 12px 0 4px;
+      font-weight: 600;
+    }
+    .product-card .price {
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .product-card .actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ---- list / items ---- */
+    .list-item {
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: #fafcff;
+      border: 1px solid #eef2f6;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .list-item:last-child {
+      margin-bottom: 0;
+    }
+    .list-item .title {
+      font-weight: 500;
+    }
+    .list-item .sub {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    /* ---- modal simulation ---- */
+    .modal-demo {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 24px 28px;
+      border: 1px solid #dbe0e8;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .modal-demo .dialog-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .modal-demo .dialog-content i {
+      font-size: 1.8rem;
+      color: #2563eb;
+    }
+
+    /* ---- utilities ---- */
+    .mt-8 { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .flex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .gap-8 { gap: 8px; }
+    .text-muted { color: #64748b; font-size: 0.85rem; }
+
+    /* responsiveness */
+    @media (max-width: 900px) {
+      .grid-2col { grid-template-columns: 1fr; }
+      .grid-3col { grid-template-columns: 1fr 1fr; }
+      .app { padding: 0 16px 30px; }
+    }
+    @media (max-width: 600px) {
+      .grid-3col { grid-template-columns: 1fr; }
+      .navbar { flex-direction: column; align-items: stretch; }
+      .nav-links { justify-content: center; flex-wrap: wrap; }
+    }
+
+    /* extra demo for shadow dom (playwright supports) */
+    .shadow-host {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #f1f5f9;
+      border-radius: 14px;
+      border: 1px dashed #b9c7da;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="logo">
+      <i class="fas fa-code"></i>
+      <span>Locator<span style="color:#2563eb;">Lab</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#" aria-current="page">Dashboard</a>
+      <a href="#">Products</a>
+      <a href="#">Orders</a>
+      <a href="#">Customers</a>
+    </div>
+    <div class="nav-actions">
+      <span class="btn-outline"><i class="far fa-user"></i> Sign in</span>
+      <span class="btn-outline"><i class="fas fa-user-plus"></i> Register</span>
+    </div>
+  </nav>
+
+  <!-- ==================== HEADER ==================== -->
+  <div class="page-header">
+    <h1>Playwright locator practice</h1>
+    <p>Use built‑in, CSS, XPath & filters — all elements are tagged with <code>data-testid</code>, <code>aria-*</code>, <code>title</code>, etc.</p>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  BUILT-IN LOCATORS  (getByRole, getByText, getByLabel, ...)   -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="builtin-section">
+    <div class="section-title">
+      <i class="fas fa-cubes"></i> Playwright built‑in locators
+      <small>getByRole · getByText · getByLabel · getByPlaceholder · getByAltText · getByTitle · getByTestId</small>
+    </div>
+
+    <div class="grid-2col">
+      <!-- left: form with label / placeholder -->
+      <div>
+        <div class="form-group">
+          <label for="username" aria-label="User Name">User Name</label>
+          <input type="text" id="username" placeholder="e.g. johndoe" data-testid="username-input" aria-label="User Name">
+          <div class="hint"><i class="fas fa-tag"></i> label + placeholder + testid</div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="name@example.com" data-testid="email-input" title="enter your work email">
+          <div class="hint"><i class="fas fa-tag"></i> label + placeholder + title</div>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" data-testid="subscribe-check"> Subscribe to newsletter</label>
+          <div class="hint"><i class="fas fa-tag"></i> role checkbox + label</div>
+        </div>
+        <div class="flex">
+          <button class="btn-primary" data-testid="signin-btn" role="button" aria-label="Sign in"> <i class="fas fa-sign-in-alt"></i> Sign in</button>
+          <button class="btn-secondary" data-testid="reset-btn" role="button">Reset</button>
+        </div>
+        <div style="margin-top: 14px;">
+          <span title="Issues count" data-testid="issue-badge"><i class="fas fa-exclamation-circle"></i> 5 issues</span>
+          <span class="btn-outline-sm" style="margin-left: 12px;" title="Notifications">3 new</span>
+        </div>
+      </div>
+
+      <!-- right: image + text + role examples -->
+      <div>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='36' fill='%232563eb'/%3E%3Ctext x='20' y='52' font-family='Arial' font-size='28' fill='white'%3EPW%3C/text%3E%3C/svg%3E" 
+             alt="Playwright logo" data-testid="logo-img" title="Playwright logo" style="width:80px; height:80px; border-radius: 40px; float: left; margin-right: 16px;">
+        <div>
+          <h3 style="font-weight:600;">Welcome, <span data-testid="username-display">John</span></h3>
+          <p><span data-testid="greeting-text">You have 2 new messages.</span></p>
+          <p><span role="status" aria-live="polite" data-testid="status-msg">Last login: today</span></p>
+        </div>
+        <div style="clear:both;"></div>
+        <div style="margin-top: 12px;">
+          <span class="btn-outline-sm" role="button" tabindex="0" data-testid="profile-btn"><i class="far fa-user"></i> Profile</span>
+          <span class="btn-outline-sm" role="button" tabindex="0" data-testid="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- additional: heading by role, link by role -->
+    <div style="margin-top: 20px; border-top: 1px solid #eef2f6; padding-top: 18px;">
+      <h3 role="heading" aria-level="3" data-testid="subheading-role">Quick links (role="link")</h3>
+      <div class="flex">
+        <a href="#" role="link" data-testid="docs-link">Documentation</a>
+        <a href="#" role="link" data-testid="api-link">API reference</a>
+        <a href="#" role="link" data-testid="community-link">Community</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  CSS SELECTORS  (absolute, relative, child, attribute, etc)   -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="css-section">
+    <div class="section-title">
+      <i class="fab fa-css3-alt"></i> CSS selectors
+      <small>absolute · relative · child · attribute · sibling · class/id · pattern</small>
+    </div>
+
+    <div class="grid-2col">
+      <!-- left: nested structure with classes & attributes -->
+      <div>
+        <div class="list-item" data-category="fruit">
+          <span class="item-name" data-type="fruit">Apple</span>
+          <span class="item-price" data-currency="usd">$1.20</span>
+          <span class="badge in-stock" data-stock="high">In stock</span>
+        </div>
+        <div class="list-item" data-category="fruit">
+          <span class="item-name" data-type="fruit">Banana</span>
+          <span class="item-price" data-currency="usd">$0.90</span>
+          <span class="badge in-stock" data-stock="medium">In stock</span>
+        </div>
+        <div class="list-item" data-category="fruit" style="opacity:0.7;">
+          <span class="item-name" data-type="fruit">Orange</span>
+          <span class="item-price" data-currency="usd">$1.50</span>
+          <span class="badge out-of-stock" data-stock="low">Out of stock</span>
+        </div>
+        <div class="list-item" data-category="dairy">
+          <span class="item-name" data-type="dairy">Milk</span>
+          <span class="item-price" data-currency="usd">$2.30</span>
+          <span class="badge in-stock" data-stock="high">In stock</span>
+        </div>
+        <div style="margin-top: 10px; background: #f1f5f9; padding: 10px 14px; border-radius: 14px;">
+          <p><strong>Following sibling:</strong> <span class="sibling-demo">first</span> <span class="sibling-demo next-sibling">second (next sibling)</span></p>
+          <p><strong>Nth child:</strong> <span class="nth-child-example">#1</span> <span class="nth-child-example">#2</span> <span class="nth-child-example">#3</span></p>
+        </div>
+      </div>
+
+      <!-- right: attribute selectors (pattern matching) -->
+      <div>
+        <input type="text" placeholder="Search by name" data-search="user" data-testid="search-input" class="search-field" style="margin-bottom: 10px;">
+        <div>
+          <span class="attr-demo" data-status="active">Active user</span>
+          <span class="attr-demo" data-status="inactive">Inactive</span>
+          <span class="attr-demo" data-status="pending">Pending</span>
+          <span class="attr-demo" data-role="admin">Admin</span>
+          <span class="attr-demo" data-role="editor">Editor</span>
+        </div>
+        <div style="margin-top: 14px;">
+          <p><strong>Attribute starts‑with (^):</strong> <span data-prefix="img-avatar">avatar</span></p>
+          <p><strong>Attribute ends‑with ($):</strong> <span data-suffix=".pdf">report.pdf</span></p>
+          <p><strong>Attribute contains (*):</strong> <span data-contains="dark-theme">dark mode</span></p>
+        </div>
+        <div style="margin-top: 14px; background: #fafcff; padding: 10px; border-radius: 12px; border:1px solid #e2e8f0;">
+          <div id="unique-parent">
+            <div class="child-selector">child 1</div>
+            <div class="child-selector special">child 2 (special)</div>
+            <div class="child-selector">child 3</div>
+          </div>
+          <p class="mt-8"><strong>Tag with ID + class:</strong> <span id="special-id" class="highlight">target element</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  XPATH SELECTORS  (axes, functions, attributes, operators)     -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="xpath-section">
+    <div class="section-title">
+      <i class="fas fa-code-branch"></i> XPath selectors
+      <small>absolute · relative · attributes · logical · functions · axes</small>
+    </div>
+
+    <div class="grid-2col">
+      <!-- left: tree structure for axes -->
+      <div>
+        <div id="xpath-tree" style="background:#f8fafc; padding:12px 16px; border-radius:16px;">
+          <div class="tree-root" data-level="root">
+            <span>Root</span>
+            <div class="tree-child" data-level="child">
+              <span>Child 1</span>
+              <div class="tree-grandchild" data-level="grandchild">Grandchild 1.1</div>
+              <div class="tree-grandchild" data-level="grandchild">Grandchild 1.2</div>
+            </div>
+            <div class="tree-child" data-level="child">
+              <span>Child 2</span>
+              <div class="tree-grandchild" data-level="grandchild">Grandchild 2.1</div>
+              <div class="tree-grandchild special-grand" data-level="grandchild" data-special="true">Grandchild 2.2 (special)</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap;">
+          <span class="btn-outline-sm" data-x="first">first()</span>
+          <span class="btn-outline-sm" data-x="last">last()</span>
+          <span class="btn-outline-sm" data-x="position">position()</span>
+        </div>
+        <div style="margin-top: 12px;">
+          <p><strong>contains / starts-with:</strong> <span data-x-text="Hello world">Hello world</span> <span data-x-text="Starts with X">Starts with X</span></p>
+        </div>
+      </div>
+
+      <!-- right: axes examples (following, preceding, sibling) -->
+      <div>
+        <div style="background:#f1f5f9; padding:12px 16px; border-radius:16px;">
+          <div><strong>Following / preceding</strong></div>
+          <div class="axis-demo" data-axis="A">A (first)</div>
+          <div class="axis-demo" data-axis="B">B (middle)</div>
+          <div class="axis-demo" data-axis="C">C (last)</div>
+          <div style="margin-top:6px;">
+            <span class="axis-sibling" data-sibling="first">Sibling 1</span>
+            <span class="axis-sibling" data-sibling="second">Sibling 2</span>
+            <span class="axis-sibling" data-sibling="third">Sibling 3</span>
+          </div>
+        </div>
+        <div style="margin-top: 14px;">
+          <p><strong>Multiple attributes (and / or):</strong> 
+            <span data-type="user" data-active="true" data-x="multi">active user</span>
+            <span data-type="user" data-active="false" data-x="multi">inactive user</span>
+          </p>
+          <p><strong>Dynamic XPath (starts‑with / contains):</strong> 
+            <span id="dynamic-123" class="dynamic-id">ID ends with 123</span>
+            <span id="prefix-456" class="dynamic-id">ID starts with prefix</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  FILTERS  (hasText, has, hasNot, visible, etc)               -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="filters-section">
+    <div class="section-title">
+      <i class="fas fa-sliders-h"></i> Filters &amp; operators
+      <small>.filter({ hasText, has, hasNot }) · .and() · .or() · visible</small>
+    </div>
+
+    <!-- product cards with filter practice -->
+    <div class="grid-3col">
+      <div class="product-card" data-testid="product-1" data-category="electronics">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23e2e8f0'/%3E%3Ctext x='24' y='64' font-family='Arial' font-size='24' fill='%23334155'%3E📱%3C/text%3E%3C/svg%3E" alt="Smartphone" data-testid="product-img-1">
+        <h4 data-testid="product-name-1">Smartphone X</h4>
+        <span class="price" data-testid="product-price-1">$799</span>
+        <div class="actions">
+          <span class="btn-outline-sm" data-testid="add-btn-1"><i class="fas fa-cart-plus"></i> Add</span>
+          <span class="badge in-stock" data-testid="stock-1">In stock</span>
+        </div>
+      </div>
+      <div class="product-card" data-testid="product-2" data-category="electronics">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23e2e8f0'/%3E%3Ctext x='24' y='64' font-family='Arial' font-size='24' fill='%23334155'%3E💻%3C/text%3E%3C/svg%3E" alt="Laptop" data-testid="product-img-2">
+        <h4 data-testid="product-name-2">Laptop Pro</h4>
+        <span class="price" data-testid="product-price-2">$1299</span>
+        <div class="actions">
+          <span class="btn-outline-sm" data-testid="add-btn-2"><i class="fas fa-cart-plus"></i> Add</span>
+          <span class="badge in-stock" data-testid="stock-2">In stock</span>
+        </div>
+      </div>
+      <div class="product-card" data-testid="product-3" data-category="accessories">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23e2e8f0'/%3E%3Ctext x='24' y='64' font-family='Arial' font-size='24' fill='%23334155'%3E🎧%3C/text%3E%3C/svg%3E" alt="Headphones" data-testid="product-img-3">
+        <h4 data-testid="product-name-3">Wireless Headphones</h4>
+        <span class="price" data-testid="product-price-3">$199</span>
+        <div class="actions">
+          <span class="btn-outline-sm" data-testid="add-btn-3"><i class="fas fa-cart-plus"></i> Add</span>
+          <span class="badge out-of-stock" data-testid="stock-3">Out of stock</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 18px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <span class="btn-outline-sm" data-testid="filter-all">All products</span>
+      <span class="btn-outline-sm" data-testid="filter-instock">In stock only</span>
+      <span class="btn-outline-sm" data-testid="filter-electronics">Electronics</span>
+    </div>
+
+    <!-- list with filter by text / has -->
+    <div style="margin-top: 24px; border-top: 1px solid #eef2f6; padding-top: 20px;">
+      <p><strong>List with filters (hasText, has, hasNot)</strong></p>
+      <ul style="list-style: none; margin-top: 8px;">
+        <li class="list-item" data-testid="list-item-1" role="listitem">
+          <span class="title">Order #1001</span>
+          <span class="sub">Status: <span class="status-badge success">Shipped</span></span>
+        </li>
+        <li class="list-item" data-testid="list-item-2" role="listitem">
+          <span class="title">Order #1002</span>
+          <span class="sub">Status: <span class="status-badge">Processing</span></span>
+        </li>
+        <li class="list-item" data-testid="list-item-3" role="listitem">
+          <span class="title">Order #1003</span>
+          <span class="sub">Status: <span class="status-badge success">Delivered</span></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  TABLES + MODAL (real-world)                                  -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="table-modal-section">
+    <div class="section-title">
+      <i class="fas fa-table"></i> Tables &amp; modal dialog
+      <small>table rows, cells, modal with role="dialog"</small>
+    </div>
+
+    <div class="table-wrap">
+      <table data-testid="orders-table">
+        <thead>
+          <tr><th>Order ID</th><th>Customer</th><th>Product</th><th>Amount</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr data-testid="row-101"><td data-testid="cell-id-101">#101</td><td>Jane Cooper</td><td>Laptop Pro</td><td>$1299</td><td><span class="status-badge success">Delivered</span></td></tr>
+          <tr data-testid="row-102"><td data-testid="cell-id-102">#102</td><td>Robert Fox</td><td>Smartphone X</td><td>$799</td><td><span class="status-badge">Processing</span></td></tr>
+          <tr data-testid="row-103"><td data-testid="cell-id-103">#103</td><td>Leslie Alexander</td><td>Headphones</td><td>$199</td><td><span class="status-badge success">Shipped</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- modal simulation (role="dialog") -->
+    <div class="modal-demo" role="dialog" aria-modal="true" aria-label="Settings dialog" data-testid="settings-dialog">
+      <div class="dialog-content">
+        <i class="fas fa-cog"></i>
+        <div>
+          <strong style="font-size:1.05rem;">Settings</strong>
+          <p style="margin:0; color:#475569;">Confirm your preferences before saving.</p>
+        </div>
+      </div>
+      <div>
+        <span class="btn-secondary" style="margin-right:8px;" data-testid="dismiss-btn"><i class="fas fa-times"></i> Dismiss</span>
+        <span class="btn-primary" data-testid="save-btn"><i class="fas fa-save"></i> Save</span>
+      </div>
+    </div>
+    <div style="margin-top: 8px; display: flex; gap: 16px;">
+      <span class="btn-outline-sm" data-testid="open-modal-trigger"><i class="fas fa-external-link-alt"></i> Open dialog</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!--  SHADOW DOM DEMO (Playwright supports)                        -->
+  <!-- ============================================================ -->
+  <div class="section-card" data-testid="shadow-section">
+    <div class="section-title">
+      <i class="fas fa-moon"></i> Shadow DOM (pierced by Playwright)
+      <small>custom element with shadow root</small>
+    </div>
+    <div class="shadow-host">
+      <x-details role="button" aria-expanded="true" aria-controls="inner-details" data-testid="shadow-host" style="display:block; padding:8px 12px; background:white; border-radius:12px;">
+        <div>Title (shadow host)</div>
+        #shadow-root
+        <div id="inner-details" style="padding:8px 0 0 12px; color:#2563eb;">Details inside shadow DOM</div>
+      </x-details>
+      <p class="text-muted" style="margin-top:8px;">Shadow root is pierced: <code>page.getByText('Details inside shadow DOM')</code> works.</p>
+    </div>
+  </div>
+
+  <!-- footer note -->
+  <div style="border-top: 1px solid #eef2f6; margin-top: 20px; padding: 16px 0 8px; font-size:0.85rem; color:#64748b; display: flex; justify-content: space-between; flex-wrap:wrap;">
+    <span><i class="fas fa-check-circle" style="color:#2563eb;"></i> All locator types: built‑in · CSS · XPath · filters · operators</span>
+    <span>data‑testid, aria‑*, title, placeholder, alt — ready for automation</span>
+  </div>
+</div>
+<!-- end app -->
+</body>
+</html>
