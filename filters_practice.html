@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Locators · practice lab</title>
+    <!-- Google Font & clean modern reset -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: #f6f9fc;
+            color: #1a2639;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* header */
+        .page-header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #2563eb, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #475569;
+            margin-top: 0.3rem;
+            font-weight: 400;
+            background: #ffffffcc;
+            backdrop-filter: blur(2px);
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            display: inline-block;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        /* card grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 1.8rem 1.6rem 2rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(0, 20, 40, 0.02);
+            transition: transform 0.15s ease, box-shadow 0.2s;
+            border: 1px solid #eef2f6;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 6px 14px rgba(0, 20, 40, 0.04);
+            transform: translateY(-3px);
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #0b1e33;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid #e9edf3;
+            padding-bottom: 0.7rem;
+        }
+
+        .card-title span {
+            background: #dbeafe;
+            color: #1e4f8a;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            margin-left: 0.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        /* list & item styling */
+        .demo-list {
+            list-style: none;
+            margin: 0.5rem 0 0.2rem;
+        }
+
+        .demo-list li {
+            background: #f8fafc;
+            padding: 0.7rem 1rem;
+            border-radius: 14px;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e9edf2;
+            transition: background 0.1s;
+        }
+
+        .demo-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-list li h3 {
+            font-weight: 500;
+            font-size: 1rem;
+            color: #1e293b;
+        }
+
+        .badge {
+            background: #eef2f6;
+            padding: 0.2rem 0.7rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #1e293b;
+            cursor: default;
+            transition: 0.1s;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid #dce2ea;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-success {
+            background: #0b8a5e;
+            border-color: #0b8a5e;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #d97706;
+            border-color: #d97706;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.9rem;
+            font-size: 0.75rem;
+        }
+
+        /* extra inline for test-id list */
+        .fruit-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem 1.2rem;
+            padding: 0.3rem 0;
+        }
+
+        .fruit-list li {
+            background: #f1f5f9;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #1e293b;
+            border: 1px solid #e2e8f0;
+            background: white;
+            list-style: none;
+        }
+
+        .fruit-list li[data-testid] {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+        }
+
+        .inline-code {
+            background: #eef2f6;
+            padding: 0.15rem 0.5rem;
+            border-radius: 30px;
+            font-family: 'Inter', monospace;
+            font-size: 0.7rem;
+            color: #1e3a5f;
+        }
+
+        /* special card for chaining */
+        .chain-list li {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .chain-list .name {
+            font-weight: 500;
+            color: #0b1e33;
+        }
+
+        .chain-list .action-group {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .extra-practice {
+            margin-top: 2.5rem;
+            background: #ffffffd8;
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 1.2rem 1.8rem;
+            border: 1px solid #dce3ec;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem 2rem;
+        }
+
+        .extra-practice .pill {
+            background: #dbeafe;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1e4f8a;
+        }
+
+        .extra-practice .pill button {
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            color: #2563eb;
+            cursor: default;
+            margin-left: 0.2rem;
+        }
+
+        .footnote {
+            margin-top: 2.8rem;
+            color: #475569;
+            font-size: 0.9rem;
+            border-top: 1px solid #dce2ea;
+            padding-top: 1.8rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .footnote code {
+            background: #eef2f6;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header class="page-header">
+        <h1>🧪 Playwright · filter lab</h1>
+        <p>practice <code class="inline-code">.filter()</code> , <code class="inline-code">.and()</code> , <code class="inline-code">getByTestId</code> &amp; chaining</p>
+    </header>
+
+    <!-- card grid -->
+    <div class="card-grid">
+
+        <!-- CARD 1: filter by text (Product 1 / 2) -->
+        <div class="card">
+            <div class="card-title">📦 Filter by text <span>hasText</span></div>
+            <ul class="demo-list">
+                <li>
+                    <h3>Product 1</h3>
+                    <button class="btn btn-primary btn-sm">Add to cart</button>
+                </li>
+                <li>
+                    <h3>Product 2</h3>
+                    <button class="btn btn-primary btn-sm">Add to cart</button>
+                </li>
+            </ul>
+            <div style="margin-top: 1rem; font-size: 0.85rem; background: #f1f6fe; padding: 0.5rem 0.8rem; border-radius: 20px;">
+                <code style="background:transparent;">page.getByRole('listitem').filter({ hasText: 'Product 2' }).getByRole('button').click()</code>
+            </div>
+        </div>
+
+        <!-- CARD 2: filter by not having text (Out of stock) + extra items -->
+        <div class="card">
+            <div class="card-title">🚫 Filter · hasNotText <span>not</span></div>
+            <ul class="demo-list">
+                <li><span>📱 Smartphone</span> <span class="badge">In stock</span></li>
+                <li><span>🎧 Headphones</span> <span class="badge" style="background:#fee2e2;color:#991b1b;">Out of stock</span></li>
+                <li><span>⌚ Smartwatch</span> <span class="badge">In stock</span></li>
+                <li><span>💻 Laptop</span> <span class="badge">In stock</span></li>
+                <li><span>📷 Camera</span> <span class="badge" style="background:#fee2e2;color:#991b1b;">Out of stock</span></li>
+            </ul>
+            <div style="margin-top: 0.8rem; font-size: 0.85rem; background: #f1f6fe; padding: 0.4rem 0.8rem; border-radius: 20px;">
+                <code>filter({ hasNotText: 'Out of stock' }) → count 3</code>
+            </div>
+        </div>
+
+        <!-- CARD 3: getByTestId (apple, banana, orange) -->
+        <div class="card">
+            <div class="card-title">🍎 getByTestId <span>data-testid</span></div>
+            <ul class="fruit-list">
+                <li data-testid="apple">🍏 apple</li>
+                <li data-testid="banana">🍌 banana</li>
+                <li data-testid="orange">🍊 orange</li>
+                <li data-testid="kiwi" style="border-left-color:#7c3aed;">🥝 kiwi</li>
+                <li data-testid="mango" style="border-left-color:#d97706;">🥭 mango</li>
+            </ul>
+            <div style="margin-top: 0.8rem; font-size: 0.85rem; background: #f1f6fe; padding: 0.4rem 0.8rem; border-radius: 20px;">
+                <code>page.getByTestId('banana')</code> &nbsp;•&nbsp; <code>getByTestId('orange')</code>
+            </div>
+        </div>
+
+        <!-- CARD 4: Chaining filters (John/Mary + Say hello/goodbye) -->
+        <div class="card">
+            <div class="card-title">⛓️ Chaining filters <span>nested</span></div>
+            <ul class="demo-list chain-list">
+                <li><span class="name">👤 John</span> <div class="action-group"><button class="btn btn-success btn-sm">Say hello</button></div></li>
+                <li><span class="name">👤 Mary</span> <div class="action-group"><button class="btn btn-success btn-sm">Say hello</button></div></li>
+                <li><span class="name">👤 John</span> <div class="action-group"><button class="btn btn-warning btn-sm">Say goodbye</button></div></li>
+                <li><span class="name">👤 Mary</span> <div class="action-group"><button class="btn btn-warning btn-sm">Say goodbye</button></div></li>
+            </ul>
+            <div style="margin-top: 0.8rem; font-size: 0.85rem; background: #f1f6fe; padding: 0.5rem 0.8rem; border-radius: 20px;">
+                <code>getByRole('listitem').filter({ hasText: 'John' }).getByRole('button', { name: 'Say goodbye' })</code>
+            </div>
+        </div>
+
+        <!-- CARD 5: .and() matching two locators (button + title) -->
+        <div class="card">
+            <div class="card-title">🔗 .and() <span>simultaneous</span></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; margin: 0.6rem 0 0.4rem;">
+                <button class="btn btn-primary" title="Subscribe">📬 Subscribe</button>
+                <button class="btn btn-outline" title="Unsubscribe">📭 Unsubscribe</button>
+                <button class="btn" title="Subscribe" style="background:#dbeafe;">⭐ Subscribe (alt)</button>
+                <button class="btn" title="Share">🔗 Share</button>
+            </div>
+            <div style="margin-top: 1rem; font-size: 0.85rem; background: #f1f6fe; padding: 0.4rem 0.8rem; border-radius: 20px;">
+               <code>page.getByRole('button').and(page.getByTitle('Subscribe'))</code> → first &amp; third button
+            </div>
+        </div>
+
+        <!-- CARD 6: extra UI for beginners – mix of filters -->
+        <div class="card">
+            <div class="card-title">🧩 extra · filter combo <span>practice</span></div>
+            <ul class="demo-list">
+                <li><span>📘 Task A</span> <span class="badge" style="background:#d1fae5;">done</span> <button class="btn btn-sm" style="background:#dbeafe;">details</button></li>
+                <li><span>📙 Task B</span> <span class="badge" style="background:#fee2e2;">pending</span> <button class="btn btn-sm" style="background:#dbeafe;">details</button></li>
+                <li><span>📗 Task C</span> <span class="badge" style="background:#d1fae5;">done</span> <button class="btn btn-sm" style="background:#dbeafe;">details</button></li>
+                <li><span>📕 Task D</span> <span class="badge" style="background:#fef9c3;">waiting</span> <button class="btn btn-sm" style="background:#dbeafe;">details</button></li>
+            </ul>
+            <div style="margin-top: 0.6rem; display: flex; flex-wrap: wrap; gap: 0.3rem 0.8rem; font-size: 0.8rem;">
+                <span class="pill" style="background:#e9edf3;">filter({ hasText: 'done' })</span>
+                <span class="pill" style="background:#e9edf3;">getByRole('button', { name: 'details' })</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- extra row: test-id & misc -->
+    <div class="extra-practice">
+        <span class="pill">🧪 <code>getByTestId('apple')</code></span>
+        <span class="pill">🔎 <code>filter({ hasNotText: 'Out of stock' })</code></span>
+        <span class="pill">⛓️ <code>.filter().getByRole()</code></span>
+        <span class="pill">🔗 <code>.and()</code> </span>
+        <span style="color:#2563eb; font-weight: 500;">+ extra list items</span>
+    </div>
+
+    <div class="footnote">
+        ⚡ All interactive elements are static — use them as practice targets for Playwright locators.<br>
+        <code>getByRole</code> · <code>filter</code> · <code>hasText</code> · <code>hasNotText</code> · <code>getByTestId</code> · <code>.and()</code>
+    </div>
+
+</div>
+</body>
+</html>
