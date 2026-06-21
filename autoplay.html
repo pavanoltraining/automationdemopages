@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Automation Playground</title>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- jQuery & jQuery UI for date pickers -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <!-- context menu (optional) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.ui.position.min.js"
+    integrity="sha512-e8Z0e7Bl6Vf3pBd1rHNeXYSL+aqY5L+tlLcM5XQMbXhsA6MlhObI/8autsPiwFuzBE6QCaQkGfwzC0z7sPpmSw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.css"
+    integrity="sha512-75aEtC0yoURHZRgZz+TD54tlNbjLxJ9f0w0ADLTbpjv1vSX9qbLx3KNZJ2ehH7Ff0DB6ZMIaXjDoEzzrUHLxzQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.9.2/jquery.contextMenu.min.js"
+    integrity="sha512-4W/0x2Ts5M2VY+Pobiy7aYxT6q+qIxeaAD4+DfiXm0XS4cVa8IWZ6mwyZd7F+5v6nD1V+6fm7Mdwro9Z7vEcRw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #f6f9fc;
+      color: #0b1a33;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+    }
+
+    /* Navbar — clean and airy */
+    .navbar {
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      border-bottom: 1px solid #eef2f8;
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(145deg, #1e4fcf, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo i {
+      -webkit-text-fill-color: #2563eb;
+      background: none;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links li a {
+      font-weight: 500;
+      color: #1e293b;
+      text-decoration: none;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links li a:hover {
+      border-bottom-color: #2563eb;
+      color: #0b1a33;
+    }
+
+    .nav-links i {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    /* Cards & grids */
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin: 40px 0 20px;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title i {
+      color: #2563eb;
+      font-size: 1.6rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .compact-grid {
+      gap: 16px !important;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 24px 28px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.01), 0 2px 6px rgba(0, 20, 50, 0.02);
+      border: 1px solid #edf2f9;
+      transition: all 0.15s ease;
+    }
+
+    .card:hover {
+      border-color: #d5deed;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .card h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #0b1a33;
+    }
+
+    .card h3 i {
+      color: #2563eb;
+      width: 24px;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      display: block;
+      margin: 14px 0 4px;
+      color: #1e293b;
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #dce3ef;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      background: #fafdff;
+      transition: 0.2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+    }
+
+    .btn {
+      background: #f1f6fc;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      transition: 0.15s;
+      width: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: scale(0.97);
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #dce3ef;
+    }
+
+    .btn-sm {
+      padding: 4px 12px;
+      font-size: 0.8rem;
+    }
+
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .radio-group,
+    .check-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      margin: 6px 0 10px;
+    }
+
+    .radio-group label,
+    .check-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      width: auto;
+      accent-color: #2563eb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th,
+    td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #edf2f8;
+      text-align: left;
+    }
+
+    th {
+      background: #f4f8fe;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: #eef2f8;
+      padding: 2px 14px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+    }
+
+    .shadow-dom-host {
+      background: #f1f6fc;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px dashed #94a3b8;
+      margin: 8px 0;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .slider-container input[type="range"] {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      background: #dce3ef;
+      border-radius: 12px;
+    }
+
+    .slider-container input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #2563eb;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    iframe {
+      width: 100%;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      background: white;
+    }
+
+    hr {
+      margin: 32px 0 16px;
+      border: none;
+      border-top: 2px dashed #e2e8f0;
+    }
+
+    .file-upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      background: #fafdff;
+    }
+
+    .file-upload-area label {
+      margin: 0 0 8px 0;
+      font-weight: 500;
+    }
+
+    .separator {
+      color: #94a3b8;
+      font-weight: 300;
+    }
+
+    .svg-elements-card .svg-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .svg-elements-card .svg-section {
+      width: 100%;
+      max-width: 280px;
+      text-align: left;
+    }
+
+    .svg-elements-card .svg-section svg {
+      width: 100%;
+      height: auto;
+      max-height: 120px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .svg-elements-card .svg-section.star-rating svg {
+      max-height: 70px;
+    }
+
+    .svg-elements-card .svg-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    /* responsive */
+    @media (max-width: 900px) {
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <span class="logo"><i class="fas fa-robot"></i>AutoPlay</span>
+      <ul class="nav-links">
+        <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#forms"><i class="fas fa-pen"></i> Forms</a></li>
+        <li><a href="#tables"><i class="fas fa-table"></i> Tables</a></li>
+        <li><a href="#popups"><i class="fas fa-window-maximize"></i> Popups</a></li>
+        <li><a href="#files"><i class="fas fa-upload"></i> Files</a></li>
+        <li><a href="#advanced"><i class="fas fa-cog"></i> Advanced</a></li>
+      </ul>
+    </nav>
+
+    <!-- HOME (anchor) -->
+    <div id="home"></div>
+
+    <!-- FORMS : Data Entry + Dropdowns -->
+    <div id="forms"></div>
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fas fa-user-plus"></i> Data Entry Form</h3>
+        <label>Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe">
+        <label>Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
+        <label>Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
+        <label>Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
+
+        <label>Gender</label>
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="Male" checked> Male</label>
+          <label><input type="radio" name="gender" value="Female"> Female</label>
+        </div>
+
+        <label>Days (checkboxes)</label>
+        <div class="check-group">
+          <label><input type="checkbox" value="Mon" checked> Mon</label>
+          <label><input type="checkbox" value="Tue"> Tue</label>
+          <label><input type="checkbox" value="Wed" checked> Wed</label>
+          <label><input type="checkbox" value="Thu"> Thu</label>
+          <label><input type="checkbox" value="Fri"> Fri</label>
+          <label><input type="checkbox" value="Sat"> Sat</label>
+          <label><input type="checkbox" value="Sun"> Sun</label>
+        </div>
+        <button class="btn btn-primary" onclick="alert('Form submitted (demo)')"><i class="fas fa-paper-plane"></i>
+          Submit</button>
+      </div>
+
+      <!-- DROPDOWNS & AUTOCOMPLETE -->
+      <div class="card">
+        <h3><i class="fas fa-caret-down"></i> Dropdowns & more</h3>
+        <label>Country</label>
+        <select id="country">
+          <option>USA</option>
+          <option selected>India</option>
+          <option>UK</option>
+          <option>Germany</option>
+          <option>France</option>
+        </select>
+
+        <label>Multi-select (hold Ctrl)</label>
+        <select multiple id="colors" size="3">
+          <option>Red</option>
+          <option selected>Blue</option>
+          <option>Green</option>
+          <option>Yellow</option>
+        </select>
+
+        <label>Fruit list</label>
+        <select id="sorted">
+          <option>Apple</option>
+          <option>Banana</option>
+          <option>Mango</option>
+          <option>Orange</option>
+        </select>
+
+        <label>Autosuggestion (type "a")</label>
+        <input type="text" id="autosuggest" placeholder="Type 'a'..." list="suggestions">
+        <datalist id="suggestions">
+          <option>Apple</option>
+          <option>Apricot</option>
+          <option>Avocado</option>
+          <option>Banana</option>
+          <option>Blueberry</option>
+        </datalist>
+
+        <label>Hidden dropdown (toggle)</label>
+        <button class="btn btn-outline"
+          onclick="document.getElementById('hiddenDropdown').style.display = document.getElementById('hiddenDropdown').style.display==='none'?'block':'none'">
+          <i class="fas fa-eye"></i> Toggle
+        </button>
+        <select id="hiddenDropdown" style="display: none; margin-top: 8px;">
+          <option>Option A</option>
+          <option>Option B</option>
+        </select>
+
+        <label>Scrollable (infinite)</label>
+        <select id="scrollable" size="6" style="height: auto; max-height: 180px; overflow-y: auto;">
+          <option>Item 1</option>
+          <option>Item 2</option>
+          <option>Item 3</option>
+          <option>Item 4</option>
+          <option>Item 5</option>
+          <option>Item 6</option>
+          <option>Item 7</option>
+          <option>Item 8</option>
+          <option>Item 9</option>
+          <option>Item 10</option>
+          <option>Item 11</option>
+          <option>Item 12</option>
+          <option>Item 13</option>
+          <option>Item 14</option>
+          <option>Item 15</option>
+          <option>Item 16</option>
+          <option>Item 17</option>
+          <option>Item 18</option>
+          <option>Item 19</option>
+          <option>Item 20</option>
+        </select>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            const sel = document.getElementById('scrollable');
+            let loading = false;
+            sel.addEventListener('scroll', function () {
+              if (loading) return;
+              if (sel.scrollTop >= sel.scrollHeight - sel.clientHeight - 10) {
+                loading = true;
+                const last = parseInt(sel.lastElementChild.textContent.replace('Item ', '')) || 20;
+                for (let i = 1; i <= 10; i++) {
+                  const opt = document.createElement('option');
+                  opt.textContent = 'Item ' + (last + i);
+                  sel.appendChild(opt);
+                }
+                loading = false;
+              }
+            });
+          });
+        </script>
+      </div>
+    </div>
+
+    <!-- DATE PICKERS (3 columns) -->
+<div class="grid-3">
+
+      <div class="card">
+        <h3><i class="fas fa-calendar-alt"></i>Date Picker (with navigation)</h3>
+        <label>Select the date</label>
+        <input type="text" id="datepicker1" placeholder="mm/dd/yyyy">
+        <script>
+          $(function () {
+            $("#datepicker1").datepicker()
+            dateFormat: "mm/dd/yyyy"
+          });
+        </script>
+      </div>
+
+
+      <div class="card">
+        <h3><i class="fas fa-calendar-day"></i>Date Picker (with select)</h3>
+        <label>Select the date</label>
+        <input type="text" id="datepicker2" placeholder="dd/mm/yyyy">
+        <script>
+          $(function () {
+            $("#datepicker2").datepicker({
+              dateFormat: "dd/mm/yy",
+              changeMonth: true,
+              changeYear: true,
+              yearRange: "2000:2050",
+              showDropdowns: true
+            });
+            //$("#datepicker2").datepicker("setDate", new Date(2026, 5, 20));
+          });
+        </script>
+      </div>
+
+
+      <div class="card">
+        <h3><i class="fas fa-calendar-week"></i> Date Range Selector</h3>
+        <div class="flex-row" style="align-items:center; gap:12px; margin-top: 12px;">
+          <input id="start-date" placeholder="Start Date" type="date" style="flex:1;" />
+          <span class="separator">to</span>
+          <input id="end-date" placeholder="End Date" type="date" style="flex:1;" />
+        </div>
+        <button class="btn btn-primary" style="margin-top: 14px;" onclick="calculateRange()"><i
+            class="fas fa-check"></i> Submit</button>
+        <div class="result" id="result" style="margin-top: 12px;"></div>
+        <script>
+          function calculateRange() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            if (!startDate || !endDate) {
+              document.getElementById('result').innerText = 'Please select both start and end dates.';
+              return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            if (start > end) {
+              document.getElementById('result').innerText = 'End date must be after start date.';
+            } else {
+              const diffTime = Math.abs(end - start);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              document.getElementById('result').innerText = `You selected a range of ${diffDays} days.`;
+            }
+          }
+        </script>
+      </div>
+    </div>
+
+
+    <!-- TABLES : static + dynamic CRUD -->
+  <div id="tables"></div>
+
+    <!-- STATIC WEB TABLE -->
+    <div class="card" style="margin-bottom: 28px;">
+      <h3><i class="fas fa-table"></i> Static Web Table</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Laptop</td>
+            <td>Electronics</td>
+            <td>$999</td>
+            <td>15</td>
+            <td><span class="badge" style="background: #dcfce7; color: #166534;">In Stock</span></td>
+          </tr>
+          <tr>
+            <td>Mouse</td>
+            <td>Electronics</td>
+            <td>$29</td>
+            <td>50</td>
+            <td><span class="badge" style="background: #dcfce7; color: #166534;">In Stock</span></td>
+          </tr>
+          <tr>
+            <td>Keyboard</td>
+            <td>Electronics</td>
+            <td>$79</td>
+            <td>0</td>
+            <td><span class="badge" style="background: #fee2e2; color: #991b1b;">Out of Stock</span></td>
+          </tr>
+          <tr>
+            <td>Monitor</td>
+            <td>Electronics</td>
+            <td>$349</td>
+            <td>8</td>
+            <td><span class="badge" style="background: #dcfce7; color: #166534;">In Stock</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- DYNAMIC WEB TABLE with CRUD -->
+    <div class="card">
+      <h3><i class="fas fa-table"></i>Web Table with CRUD </h3>
+      <table id="dynamicTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td>1</td>
+            <td>Alice</td>
+            <td>Engineer</td>
+            <td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Bob</td>
+            <td>Designer</td>
+            <td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="flex-row" style="margin-top: 12px;">
+        <input type="text" id="newName" placeholder="Name" style="width: auto; flex:1;">
+        <input type="text" id="newRole" placeholder="Role" style="width: auto; flex:1;">
+        <button class="btn btn-primary" onclick="addRow()"><i class="fas fa-plus"></i> Add</button>
+        <button class="btn btn-outline"
+          onclick="document.getElementById('tableBody').innerHTML += `<tr><td>3</td><td>New</td><td>Dev</td><td><button class='btn btn-danger btn-sm' onclick='deleteRow(this)'>Delete</button></td></tr>`">+
+          Dynamic</button>
+      </div>
+      <div style="margin-top: 12px;"><input type="text" placeholder="Search table..." oninput="filterTable(this.value)"
+          style="width: 200px;"></div>
+    </div>
+
+    <div class="card" style="margin-top: 28px;">
+      <h3><i class="fas fa-table"></i> Dynamic System Processes Table</h3>
+      <table id="taskTable">
+        <thead>
+          <tr id="headers"></tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="display-values" id="displayValues" style="margin-top: 16px; font-size: 0.95rem; color: #334155;"></div>
+    </div>
+
+
+    <!-- POPUPS / ALERTS / BUTTONS -->
+    <div id="popups"></div>
+    <div class="grid-3">
+      <div class="card">
+        <h3><i class="fas fa-exclamation-triangle"></i> Alerts</h3>
+        <button class="btn btn-primary" onclick="alert('Simple alert!')">Simple</button>
+        <button class="btn btn-primary" onclick="if(confirm('Confirm?')) alert('Confirmed')">Confirm</button>
+        <button class="btn btn-primary" onclick="let r=prompt('Enter name:'); if(r) alert('Hello '+r)">Prompt</button>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-window-restore"></i> Popups</h3>
+        <button class="btn btn-primary" onclick="window.open('https://playwright.dev/', '_blank')">New Tab</button>
+        <button id="PopUp" class="btn btn-primary" onclick="return popup()">Popup</button>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-play"></i> Toggle Button</h3>
+        <button id="toggleBtn" class="btn btn-primary" onclick="toggleButton(this)">Start</button>
+      </div>
+    </div>
+
+    <!-- FILE UPLOAD / DOWNLOAD -->
+    <div id="files"></div>
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fas fa-upload"></i> File Upload</h3>
+        <div class="file-upload-area"><label>Single</label><input type="file" id="singleFile"></div>
+        <div class="file-upload-area" style="margin-top:12px;"><label>Multiple</label><input type="file" id="multiFile"
+            multiple></div>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-download"></i> File Download</h3>
+        <button class="btn btn-primary" onclick="downloadFile()"><i class="fas fa-file-download"></i> Download
+          .txt</button>
+        <button class="btn btn-outline"
+          onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank')">Open
+          PDF</button>
+      </div>
+    </div>
+
+    <!-- ADVANCED: Tooltip, Shadow DOM, SVG -->
+    <div id="advanced"></div>
+    <div class="grid-3 compact-grid">
+      <div class="card">
+        <h3><i class="fas fa-info-circle"></i> Interactive Tooltip</h3>
+        <span title="This is a tooltip" style="background:#eef2f8; padding:6px 18px; border-radius:40px;">Hover
+          me</span>
+      </div>
+
+
+      <div class="card">
+        <h3><i class="fas fa-code"></i> Shadow DOM</h3>
+        <div id="non_host"></div>
+        <div id="shadow_host"></div>
+        <br />
+        <a href="https://www.youtube.com/@sdetpavan/videos">Youtube</a>
+        <br />
+        <script>
+          let shadowRoot = document.getElementById('shadow_host').attachShadow({ mode: 'open' });
+          shadowRoot.innerHTML = `
+              <span class="wrapper" id="shadow_content"><span class="info">Mobiles</span><br></span>
+              <div id="nested_shadow_host"></div>
+              <a href="https://www.pavantestingtools.com/">Blog</a><br>
+              <input type="text" /><br>
+              <input type="checkbox" /><br>
+              <input type="file" /><br>
+            `;
+
+          let nestedShadowRoot = shadowRoot.getElementById('nested_shadow_host').attachShadow({ mode: 'open' });
+          nestedShadowRoot.innerHTML = `
+              <div id="nested_shadow_content"><div>Laptops</div><br></div>
+            `;
+        </script>
+
+
+      </div>
+
+
+      <div class="card svg-elements-card">
+        <h3><i class="fas fa-shapes"></i> SVG Elements</h3>
+        <div class="svg-group">
+          <div class="svg-section">
+            <p class="svg-label">Basic Shapes</p>
+            <svg viewBox="0 0 300 100" style="border: 1px solid #e2e8f0; border-radius: 8px;">
+              <circle cx="30" cy="50" r="20" fill="#2563eb" />
+              <rect x="60" y="30" width="40" height="40" fill="#7c3aed" rx="4" />
+              <polygon points="150,20 180,70 120,70" fill="#ec4899" />
+              <ellipse cx="230" cy="50" rx="35" ry="25" fill="#f59e0b" />
+              <line x1="280" y1="20" x2="280" y2="80" stroke="#06b6d4" stroke-width="3" />
+            </svg>
+          </div>
+
+          <div class="svg-section">
+            <p class="svg-label">Bar Chart</p>
+            <svg viewBox="0 0 300 120" style="border: 1px solid #e2e8f0; border-radius: 8px;">
+              <line x1="30" y1="100" x2="30" y2="10" stroke="#94a3b8" stroke-width="2" />
+              <line x1="30" y1="100" x2="280" y2="100" stroke="#94a3b8" stroke-width="2" />
+              <rect x="50" y="70" width="30" height="30" fill="#3b82f6" />
+              <rect x="100" y="50" width="30" height="50" fill="#10b981" />
+              <rect x="150" y="40" width="30" height="60" fill="#f59e0b" />
+              <rect x="200" y="60" width="30" height="40" fill="#ef4444" />
+              <rect x="250" y="30" width="30" height="70" fill="#8b5cf6" />
+              <text x="65" y="115" font-size="10" text-anchor="middle" fill="#64748b">A</text>
+              <text x="115" y="115" font-size="10" text-anchor="middle" fill="#64748b">B</text>
+              <text x="165" y="115" font-size="10" text-anchor="middle" fill="#64748b">C</text>
+              <text x="215" y="115" font-size="10" text-anchor="middle" fill="#64748b">D</text>
+              <text x="265" y="115" font-size="10" text-anchor="middle" fill="#64748b">E</text>
+            </svg>
+          </div>
+
+          <div class="svg-section star-rating">
+            <p class="svg-label">5-Star Rating</p>
+            <svg viewBox="0 0 250 50" style="border: 1px solid #e2e8f0; border-radius: 8px;">
+              <polygon points="25,10 30,25 45,25 32,35 37,50 25,40 13,50 18,35 5,25 20,25" fill="#fbbf24" />
+              <polygon points="75,10 80,25 95,25 82,35 87,50 75,40 63,50 68,35 55,25 70,25" fill="#fbbf24" />
+              <polygon points="125,10 130,25 145,25 132,35 137,50 125,40 113,50 118,35 105,25 120,25" fill="#fbbf24" />
+              <polygon points="175,10 180,25 195,25 182,35 187,50 175,40 163,50 168,35 155,25 170,25" fill="#fbbf24" />
+              <polygon points="225,10 230,25 245,25 232,35 237,50 225,40 213,50 218,35 205,25 220,25" fill="#e5e7eb" />
+              <polygon points="225,10 230,25 237.5,25 232,35 237,50 225,40 225,50" fill="#fbbf24" />
+              <text x="10" y="40" font-size="12" fill="#64748b">★★★★☆ (4.5/5)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERACTIONS: hover, double click, drag & drop, slider -->
+    
+    <div class="grid-3 compact-grid">
+      <div class="card">
+        <h3><i class="fas fa-hand-pointer"></i> Hover & Double Click</h3>
+        <button class="btn btn-outline" onmouseover="this.style.background='#dbeafe'"
+          onmouseout="this.style.background=''">Hover me</button>
+        <button class="btn btn-outline" ondblclick="alert('Double clicked!')">Double click</button>
+        <div style="margin-top:18px;">
+          <label style="font-weight:500;">Field1</label>
+          <input type="text" id="field1" value="Hello World!" style="margin-bottom:8px;">
+          <label style="font-weight:500;">Field2</label>
+          <input type="text" id="field2" style="margin-bottom:8px;">
+          <button class="btn btn-outline"
+            ondblclick="document.getElementById('field2').value = document.getElementById('field1').value">Copy
+            Text</button>
+          <p style="margin-top:8px; font-size:0.85rem; color:#64748b;">Double‑click button to copy Field1 → Field2</p>
+        </div>
+      </div>
+
+      <!-- drag and drop -->
+      <div class="card">
+        <h3><i class="fas fa-arrows-alt-h"></i> Drag & Drop Interaction</h3>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <div draggable="true" style="background:#e2e8f0; padding:10px 24px; border-radius:40px;"
+            ondragstart="event.dataTransfer.setData('text/plain','dragged')">Drag me</div>
+          <div style="background:#e2e8f0; padding:10px 24px; border-radius:40px;"
+            ondrop="event.preventDefault(); alert('Dropped!')" ondragover="event.preventDefault()">Drop zone</div>
+        </div>
+        
+        <!--right click-->
+        <!--<div style="margin-top:18px;">  </div>
+        <h3><i class="fas fa-mouse-pointer"></i> Right Click/Context Menu</h3>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+         <span class="context-menu-one btn btn-neutral">right click me</span>
+        </div>-->
+
+
+        <!--slider -->
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-sliders-h"></i> Range Slider</h3>
+        <div class="slider-container"><input type="range" min="0" max="100" value="50" id="priceSlider"><span
+            id="sliderVal">50</span></div>
+        <script>document.getElementById('priceSlider').addEventListener('input', function (e) { document.getElementById('sliderVal').textContent = e.target.value; });</script>
+      </div>
+    </div>
+
+    <!-- IFRAMES -->
+    <div class="grid-2">
+      <div class="card">
+        <h3><i class="fas fa-layer-group"></i> Nested frames</h3>
+        <iframe
+          srcdoc="<h4>Outer frame</h4><iframe srcdoc='<p style=color:blue;>Inner frame</p>' style='width:100%;height:80px;border:1px solid #ccc;'></iframe>"
+          style="height:160px;"></iframe>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-window-maximize"></i> iframe (external)</h3>
+        <iframe src="https://playwright.dev/" title="example" style="height:200px;"></iframe>
+      </div>
+    </div>
+
+    <hr>
+    <div style="text-align:center; color:#64748b; padding:20px 0;">Automation Playground · Reframed</div>
+  </div>
+
+  <script>
+
+// Table CRUD
+
+    function deleteRow(btn) {
+      if (confirm('Delete row?')) btn.closest('tr').remove();
+    }
+    function addRow() {
+      const name = document.getElementById('newName').value || 'New';
+      const role = document.getElementById('newRole').value || 'Dev';
+      const tbody = document.getElementById('tableBody');
+      const rowCount = tbody.children.length + 1;
+      tbody.innerHTML += `<tr><td>${rowCount}</td><td>${name}</td><td>${role}</td><td><button class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td></tr>`;
+    }
+    function filterTable(val) {
+      const rows = document.querySelectorAll('#tableBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(val.toLowerCase()) ? '' : 'none';
+      });
+    }
+
+
+    //Popups
+    function popup() {
+      const screenWidth = screen.availWidth;
+      const screenHeight = screen.availHeight;
+
+      const windowWidth = Math.floor(screenWidth / 3);   // smaller windows
+      const windowHeight = Math.floor(screenHeight * 0.6);
+
+      const topPosition = Math.floor((screenHeight - windowHeight) / 2);
+
+      // First window - LEFT SIDE (fixed at 0)
+      window.open(
+        "https://www.selenium.dev/",
+        "SeleniumWindow",
+        `width=${windowWidth},height=${windowHeight},left=0,top=${topPosition}`
+      );
+
+      // Second window - RIGHT SIDE (stick to right edge)
+      const rightPosition = screenWidth - windowWidth;
+
+      window.open(
+        "https://playwright.dev/",
+        "PlaywrightWindow",
+        `width=${windowWidth},height=${windowHeight},left=${rightPosition},top=${topPosition}`
+      );
+    }
+    
+ // Dynamic system process table
+    const processes = [
+      { name: 'Internet Explorer' },
+      { name: 'Chrome' },
+      { name: 'Firefox' },
+      { name: 'System' }
+    ];
+    const columns = ['CPU (%)', 'Network (Mbps)', 'Disk (MB/s)', 'Memory (MB)'];
+    let chromeCpu, chromeNetwork, firefoxMemory, firefoxDisk, ieDisk;
+
+    function getRandomValue(min, max, decimals = 1) {
+      return (Math.random() * (max - min) + min).toFixed(decimals);
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createTable() {
+      const shuffledColumns = shuffleArray([...columns]);
+      const headerRow = document.getElementById('headers');
+      headerRow.innerHTML = '';
+      const nameHeader = document.createElement('th');
+      nameHeader.innerText = 'Name';
+      headerRow.appendChild(nameHeader);
+      shuffledColumns.forEach(column => {
+        const th = document.createElement('th');
+        th.innerText = column;
+        headerRow.appendChild(th);
+      });
+      const shuffledProcesses = shuffleArray([...processes]);
+      const tableBody = document.getElementById('rows');
+      tableBody.innerHTML = '';
+      shuffledProcesses.forEach(process => {
+        const row = document.createElement('tr');
+        const nameCell = document.createElement('td');
+        nameCell.innerText = process.name;
+        row.appendChild(nameCell);
+        shuffledColumns.forEach(column => {
+          const td = document.createElement('td');
+          let randomValue;
+          if (column === 'CPU (%)') {
+            randomValue = getRandomValue(0, 10) + '%';
+            td.innerText = randomValue;
+            if (process.name === 'Chrome') chromeCpu = randomValue;
+          } else if (column === 'Network (Mbps)') {
+            randomValue = getRandomValue(0, 10) + ' Mbps';
+            td.innerText = randomValue;
+            if (process.name === 'Chrome') chromeNetwork = randomValue;
+          } else if (column === 'Disk (MB/s)') {
+            randomValue = getRandomValue(0, 1, 2) + ' MB/s';
+            td.innerText = randomValue;
+            if (process.name === 'Internet Explorer') ieDisk = randomValue;
+            else if (process.name === 'Firefox') firefoxDisk = randomValue;
+          } else if (column === 'Memory (MB)') {
+            randomValue = getRandomValue(30, 100) + ' MB';
+            td.innerText = randomValue;
+            if (process.name === 'Firefox') firefoxMemory = randomValue;
+          }
+          row.appendChild(td);
+        });
+        tableBody.appendChild(row);
+      });
+      displayValues();
+    }
+
+    function displayValues() {
+      const displayDiv = document.getElementById('displayValues');
+      displayDiv.innerHTML = `
+        <p>CPU load of Chrome process: <strong class="chrome-cpu">${chromeCpu}</strong>
+                Memory Size of Firefox process: <strong class="firefox-memory">${firefoxMemory}</strong></p>
+
+        <!--<p>CPU load of Chrome process: <strong class="chrome-cpu">${chromeCpu}</strong></p>
+        <p>Memory Size of Firefox process: <strong class="firefox-memory">${firefoxMemory}</strong></p>
+        <p>Network speed of Chrome process: <strong class="chrome-network">${chromeNetwork}</strong></p>
+        <p>Disk space of Firefox process: <strong class="firefox-disk">${firefoxDisk}</strong></p>-->
+      `;
+    }
+
+    function toggleButton(btn) {
+      btn.textContent = btn.textContent === 'Start' ? 'Stop' : 'Start';
+      btn.classList.toggle('btn-danger');
+    }
+    function downloadFile() {
+      const blob = new Blob(['Hello, this is a sample file for automation download.'], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'sample.txt';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    // Initialize the Dynamic System Processes Table on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      createTable();
+    });
+
+    //Right click functionality
+     $(function() {
+        $.contextMenu({
+            selector: '.context-menu-one', 
+            callback: function(key, options) {
+                var m = "clicked: " + key;
+                window.console && console.log(m) || alert(m); 
+            },
+            items: {
+                "edit": {name: "Edit", icon: "edit"},
+                "cut": {name: "Cut", icon: "cut"},
+               copy: {name: "Copy", icon: "copy"},
+                "paste": {name: "Paste", icon: "paste"},
+                "delete": {name: "Delete", icon: "delete"},
+                "sep1": "---------",
+                "quit": {name: "Quit", icon: function(){
+                    return 'context-menu-icon context-menu-icon-quit';
+                }}
+            }
+        });
+
+        $('.context-menu-one').on('click', function(e){
+            console.log('clicked', this);
+        })    
+    });
+
+
+
+  </script>
+</body>
+
+</html>
