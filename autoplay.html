@@ -430,26 +430,26 @@
     <div class="grid-2">
       <div class="card">
         <h3><i class="fas fa-user-plus"></i> Data Entry Form</h3>
-        <label>Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe">
-        <label>Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
-        <label>Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
-        <label>Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
+        <label for="name">Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe" maxlength="15">
+        <label for="email">Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
+        <label for="phone">Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
+        <label for="address">Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
 
         <label>Gender</label>
         <div class="radio-group">
-          <label><input type="radio" name="gender" value="Male" checked> Male</label>
-          <label><input type="radio" name="gender" value="Female"> Female</label>
+          <label><input type="radio" id="male"  name="gender" value="Male"> Male</label>
+          <label><input type="radio" id="female" name="gender" value="Female"> Female</label>
         </div>
 
         <label>Days (checkboxes)</label>
         <div class="check-group">
-          <label><input type="checkbox" value="Mon" checked> Mon</label>
-          <label><input type="checkbox" value="Tue"> Tue</label>
-          <label><input type="checkbox" value="Wed" checked> Wed</label>
-          <label><input type="checkbox" value="Thu"> Thu</label>
-          <label><input type="checkbox" value="Fri"> Fri</label>
-          <label><input type="checkbox" value="Sat"> Sat</label>
-          <label><input type="checkbox" value="Sun"> Sun</label>
+          <label><input type="checkbox" id="mon" value="mon"> Mon</label>
+          <label><input type="checkbox" id="tue" value="tue"> Tue</label>
+          <label><input type="checkbox" id="wed" value="wed"> Wed</label>
+          <label><input type="checkbox" id="thu" value="thu"> Thu</label>
+          <label><input type="checkbox" id="fri" value="fri"> Fri</label>
+          <label><input type="checkbox" id="sat" value="sat"> Sat</label>
+          <label><input type="checkbox" id="sun" value="sun"> Sun</label>
         </div>
         <button class="btn btn-primary" onclick="alert('Form submitted (demo)')"><i class="fas fa-paper-plane"></i>
           Submit</button>
@@ -460,31 +460,31 @@
         <h3><i class="fas fa-caret-down"></i> Dropdowns & more</h3>
         <label>Country</label>
         <select id="country">
-          <option>USA</option>
-          <option selected>India</option>
-          <option>UK</option>
-          <option>Germany</option>
-          <option>France</option>
+          <option value="india" >India</option>
+          <option value="usa">USA</option>
+          <option value="uk">UK</option>
+          <option value="germany">Germany</option>
+          <option value="france">France</option>
         </select>
 
         <label>Multi-select (hold Ctrl)</label>
         <select multiple id="colors" size="3">
-          <option>Red</option>
-          <option selected>Blue</option>
-          <option>Green</option>
-          <option>Yellow</option>
+          <option value="red">Red</option>
+          <option value="blue" selected>Blue</option>
+          <option value="green">Green</option>
+          <option value="yellow">Yellow</option>
         </select>
 
         <label>Fruit list</label>
         <select id="sorted">
-          <option>Apple</option>
-          <option>Banana</option>
-          <option>Mango</option>
-          <option>Orange</option>
+          <option value="apple">Apple</option>
+          <option value="banana">Banana</option>
+          <option value="mango">Mango</option>
+          <option value="orange">Orange</option>
         </select>
-
+        <!--
         <label>Autosuggestion (type "a")</label>
-        <input type="text" id="autosuggest" placeholder="Type 'a'..." list="suggestions">
+        <input type="text" id="autosuggest" list="suggestions">
         <datalist id="suggestions">
           <option>Apple</option>
           <option>Apricot</option>
@@ -502,7 +502,7 @@
           <option>Option A</option>
           <option>Option B</option>
         </select>
-
+      -->
         <label>Scrollable (infinite)</label>
         <select id="scrollable" size="6" style="height: auto; max-height: 180px; overflow-y: auto;">
           <option>Item 1</option>
@@ -1046,6 +1046,7 @@
     function toggleButton(btn) {
       btn.textContent = btn.textContent === 'Start' ? 'Stop' : 'Start';
       btn.classList.toggle('btn-danger');
+    
     }
     function downloadFile() {
       const blob = new Blob(['Hello, this is a sample file for automation download.'], { type: 'text/plain' });
