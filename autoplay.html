@@ -326,6 +326,28 @@
       cursor: pointer;
     }
 
+    .error-message {
+      display: none;
+      color: #b91c1c;
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .error-message ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .input-error {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+    }
+
     iframe {
       width: 100%;
       border-radius: 20px;
@@ -430,29 +452,33 @@
     <div class="grid-2">
       <div class="card">
         <h3><i class="fas fa-user-plus"></i> Data Entry Form</h3>
-        <label for="name">Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe" maxlength="15">
-        <label for="email">Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
-        <label for="phone">Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
-        <label for="address">Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
+        <form id="dataEntryForm" novalidate>
+          <label for="name">Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe" maxlength="15">
+          <label for="email">Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
+          <label for="phone">Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
+          <label for="address">Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
 
-        <label>Gender</label>
-        <div class="radio-group">
-          <label><input type="radio" id="male"  name="gender" value="Male"> Male</label>
-          <label><input type="radio" id="female" name="gender" value="Female"> Female</label>
-        </div>
+          <label>Gender</label>
+          <div class="radio-group">
+            <label><input type="radio" id="male" name="gender" value="Male"> Male</label>
+            <label><input type="radio" id="female" name="gender" value="Female"> Female</label>
+          </div>
 
-        <label>Days (checkboxes)</label>
-        <div class="check-group">
-          <label><input type="checkbox" id="mon" value="mon"> Mon</label>
-          <label><input type="checkbox" id="tue" value="tue"> Tue</label>
-          <label><input type="checkbox" id="wed" value="wed"> Wed</label>
-          <label><input type="checkbox" id="thu" value="thu"> Thu</label>
-          <label><input type="checkbox" id="fri" value="fri"> Fri</label>
-          <label><input type="checkbox" id="sat" value="sat"> Sat</label>
-          <label><input type="checkbox" id="sun" value="sun"> Sun</label>
-        </div>
-        <button class="btn btn-primary" onclick="alert('Form submitted (demo)')"><i class="fas fa-paper-plane"></i>
-          Submit</button>
+          <label>Days (checkboxes)</label>
+          <div class="check-group">
+            <label><input type="checkbox" id="mon" value="mon"> Mon</label>
+            <label><input type="checkbox" id="tue" value="tue"> Tue</label>
+            <label><input type="checkbox" id="wed" value="wed"> Wed</label>
+            <label><input type="checkbox" id="thu" value="thu"> Thu</label>
+            <label><input type="checkbox" id="fri" value="fri"> Fri</label>
+            <label><input type="checkbox" id="sat" value="sat"> Sat</label>
+            <label><input type="checkbox" id="sun" value="sun"> Sun</label>
+          </div>
+
+          <div id="formErrors" class="error-message" aria-live="polite"></div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i>
+            Submit</button>
+        </form>
       </div>
 
       <!-- DROPDOWNS & AUTOCOMPLETE -->
@@ -1057,9 +1083,114 @@
       URL.revokeObjectURL(link.href);
     }
 
-    // Initialize the Dynamic System Processes Table on page load
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    }
+
+    function updateFieldError(field) {
+      if (!field) return;
+      if (field.value.trim() === '') {
+        field.classList.add('input-error');
+      } else {
+        field.classList.remove('input-error');
+      }
+    }
+
+    function showFormErrors(errors) {
+      const formErrors = document.getElementById('formErrors');
+      if (!formErrors) return;
+      if (errors.length === 0) {
+        formErrors.style.display = 'none';
+        formErrors.innerHTML = '';
+        return;
+      }
+      formErrors.style.display = 'block';
+      formErrors.innerHTML = `<strong>Please fix the following:</strong><ul>${errors.map(error => `<li>${error}</li>`).join('')}</ul>`;
+    }
+
+    function handleDataEntrySubmit(event) {
+      event.preventDefault();
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const addressInput = document.getElementById('address');
+      const genderInputs = document.querySelectorAll('input[name="gender"]');
+      const dayInputs = document.querySelectorAll('.check-group input[type="checkbox"]');
+
+      const errors = [];
+      const nameValue = nameInput.value.trim();
+      const emailValue = emailInput.value.trim();
+      const phoneValue = phoneInput.value.trim();
+      const addressValue = addressInput.value.trim();
+
+      if (!nameValue) {
+        errors.push('Full name is required.');
+      }
+      if (nameValue.length > 15) {
+        errors.push('Full name must be 15 characters or fewer.');
+      }
+      if (!emailValue) {
+        errors.push('Email is required.');
+      } else if (!isValidEmail(emailValue)) {
+        errors.push('Please enter a valid email address.');
+      }
+      if (!phoneValue) {
+        errors.push('Phone is required.');
+      }
+      if (!addressValue) {
+        errors.push('Address is required.');
+      }
+
+      const genderSelected = Array.from(genderInputs).some(input => input.checked);
+      if (!genderSelected) {
+        errors.push('Please select a gender.');
+      }
+
+      const daySelected = Array.from(dayInputs).some(input => input.checked);
+      if (!daySelected) {
+        errors.push('Please select at least one day.');
+      }
+
+      updateFieldError(nameInput);
+      updateFieldError(emailInput);
+      updateFieldError(phoneInput);
+      updateFieldError(addressInput);
+
+      showFormErrors(errors);
+
+      if (errors.length === 0) {
+        alert('Form submitted (demo)');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       createTable();
+      const nameInput = document.getElementById('name');
+      const phoneInput = document.getElementById('phone');
+      const form = document.getElementById('dataEntryForm');
+
+      if (nameInput) {
+        nameInput.addEventListener('input', function () {
+          if (this.value.length > 15) {
+            this.value = this.value.slice(0, 15);
+          }
+          updateFieldError(this);
+        });
+      }
+
+      if (phoneInput) {
+        phoneInput.addEventListener('input', function () {
+          const cleaned = this.value.replace(/[A-Za-z]/g, '');
+          if (cleaned !== this.value) {
+            this.value = cleaned;
+          }
+          updateFieldError(this);
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', handleDataEntrySubmit);
+      }
     });
 
     //Right click functionality
