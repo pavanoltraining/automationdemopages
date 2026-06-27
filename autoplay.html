@@ -230,6 +230,80 @@
       color: white;
     }
 
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .popup-card {
+      width: min(420px, calc(100% - 40px));
+      background: #fff;
+      border-radius: 20px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+      animation: popup-enter 0.25s ease;
+    }
+
+    .popup-icon {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 22px;
+      background: linear-gradient(135deg, #6d8cff, #8b5cf6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 42px;
+    }
+
+    .popup-card h2 {
+      font-size: 36px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .popup-card h2 span {
+      color: #3f6df6;
+    }
+
+    .popup-card p {
+      color: #475569;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .popup-card .popup-close {
+      display: block;
+      margin-top: 16px;
+      text-decoration: none;
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .popup-card .popup-close:hover {
+      color: #111827;
+    }
+
+    @keyframes popup-enter {
+      from {
+        transform: scale(0.85);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
     .btn-outline {
       background: transparent;
       border: 1px solid #dce3ef;
@@ -769,6 +843,14 @@
 
     <!-- POPUPS / ALERTS / BUTTONS -->
     <div id="popups"></div>
+    <div class="popup-overlay" id="inlinePopup">
+      <div class="popup-card">
+        <div class="popup-icon">🔔</div>
+        <h2>Be always <span>in touch</span></h2>
+        <button class="btn btn-primary" onclick="closePopup()">Yes</button>
+        <a href="#" class="popup-close" onclick="closePopup(); return false;">No, maybe next time</a>
+      </div>
+    </div>
     <div class="grid-3">
       <div class="card">
         <h3><i class="fas fa-exclamation-triangle"></i> Alerts</h3>
@@ -778,8 +860,9 @@
       </div>
       <div class="card">
         <h3><i class="fas fa-window-restore"></i> Popups</h3>
-        <button class="btn btn-primary" onclick="window.open('https://playwright.dev/', '_blank')">New Tab</button>
         <button id="PopUp" class="btn btn-primary" onclick="return popup()">Popup</button>
+        <button class="btn btn-primary" onclick="window.open('https://playwright.dev/', '_blank')">New Tab</button>
+        <button id="window" class="btn btn-primary" onclick="return newwindow()">New Window</button>
       </div>
       <div class="card">
         <h3><i class="fas fa-play"></i> Toggle Button</h3>
@@ -983,6 +1066,21 @@
 
     //Popups
     function popup() {
+      const overlay = document.getElementById('inlinePopup');
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
+      return false;
+    }
+
+    function closePopup() {
+      const overlay = document.getElementById('inlinePopup');
+      if (overlay) {
+        overlay.style.display = 'none';
+      }
+    }
+    
+  function newwindow() {
       const screenWidth = screen.availWidth;
       const screenHeight = screen.availHeight;
 
@@ -992,12 +1090,12 @@
       const topPosition = Math.floor((screenHeight - windowHeight) / 2);
 
       // First window - LEFT SIDE (fixed at 0)
-      window.open(
+      /*window.open(
         "https://www.selenium.dev/",
         "SeleniumWindow",
         `width=${windowWidth},height=${windowHeight},left=0,top=${topPosition}`
-      );
-
+      ); 
+      */
       // Second window - RIGHT SIDE (stick to right edge)
       const rightPosition = screenWidth - windowWidth;
 
@@ -1005,9 +1103,12 @@
         "https://playwright.dev/",
         "PlaywrightWindow",
         `width=${windowWidth},height=${windowHeight},left=${rightPosition},top=${topPosition}`
+
       );
     }
-    
+
+
+
  // Dynamic system process table
     const processes = [
       { name: 'Internet Explorer' },
