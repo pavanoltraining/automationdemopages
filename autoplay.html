@@ -875,14 +875,26 @@
     <div class="grid-2">
       <div class="card">
         <h3><i class="fas fa-upload"></i> File Upload</h3>
-        <div class="file-upload-area"><label>Single</label><input type="file" id="singleFile"></div>
-        <div class="file-upload-area" style="margin-top:12px;"><label>Multiple</label><input type="file" id="multiFile"
-            multiple></div>
+        <div class="file-upload-area">
+          <label>Single</label>
+          <form id="singleFileForm">
+            <input type="file" id="singleFileInput" />
+            <button type="submit" class="btn btn-primary">Upload Single File</button>
+          </form>
+          <p id="singleFileStatus"></p>
+        </div>
+        <div class="file-upload-area" style="margin-top:12px;">
+          <label>Multiple</label>
+          <form id="multipleFilesForm">
+            <input type="file" id="multipleFilesInput" multiple />
+            <button type="submit" class="btn btn-primary">Upload Multiple Files</button>
+          </form>
+          <p id="multipleFilesStatus"></p>
+        </div>
       </div>
       <div class="card">
         <h3><i class="fas fa-download"></i> File Download</h3>
-        <button class="btn btn-primary" onclick="downloadFile()"><i class="fas fa-file-download"></i> Download
-          .txt</button>
+        <button class="btn btn-primary" onclick="downloadFile()"><i class="fas fa-file-download"></i> Download File</button>
         <button class="btn btn-outline"
           onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank')">Open
           PDF</button>
@@ -1309,6 +1321,43 @@
 
       if (form) {
         form.addEventListener('submit', handleDataEntrySubmit);
+      }
+
+      const singleFileForm = document.getElementById('singleFileForm');
+      const multipleFilesForm = document.getElementById('multipleFilesForm');
+
+      if (singleFileForm) {
+        singleFileForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const fileInput = document.getElementById('singleFileInput');
+          const status = document.getElementById('singleFileStatus');
+
+          if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            status.textContent = `Single file selected: ${file.name}, Size: ${file.size} bytes, Type: ${file.type}`;
+          } else {
+            status.textContent = 'No file selected.';
+          }
+        });
+      }
+
+      if (multipleFilesForm) {
+        multipleFilesForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const fileInput = document.getElementById('multipleFilesInput');
+          const status = document.getElementById('multipleFilesStatus');
+
+          if (fileInput.files.length > 0) {
+            const files = fileInput.files;
+            let output = 'Multiple files selected:<br>';
+            for (let i = 0; i < files.length; i++) {
+              output += `${files[i].name}, Size: ${files[i].size} bytes, Type: ${files[i].type}<br>`;
+            }
+            status.innerHTML = output;
+          } else {
+            status.textContent = 'No files selected.';
+          }
+        });
       }
     });
 
