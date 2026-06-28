@@ -24,7 +24,7 @@
     integrity="sha512-4W/0x2Ts5M2VY+Pobiy7aYxT6q+qIxeaAD4+DfiXm0XS4cVa8IWZ6mwyZd7F+5v6nD1V+6fm7Mdwro9Z7vEcRw=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  
+
   <style>
     * {
       margin: 0;
@@ -298,6 +298,7 @@
         transform: scale(0.85);
         opacity: 0;
       }
+
       to {
         transform: scale(1);
         opacity: 1;
@@ -307,6 +308,38 @@
     .btn-outline {
       background: transparent;
       border: 1px solid #dce3ef;
+    }
+
+    .custom-context-menu {
+      position: fixed;
+      z-index: 10000;
+      min-width: 140px;
+      background: #ffffff;
+      border: 1px solid #dce3ef;
+      border-radius: 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
+      padding: 8px;
+      display: none;
+    }
+
+    .custom-context-menu[hidden] {
+      display: none;
+    }
+
+    .custom-context-menu .ctx-item {
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      color: #0f172a;
+    }
+
+    .custom-context-menu .ctx-item:hover {
+      background: #f1f5f9;
     }
 
     .btn-sm {
@@ -499,28 +532,34 @@
         gap: 12px;
       }
     }
-    .yellow-label {
-            background-color: yellow;
-        }
-        .display-values {
-            margin-top: 20px;
-        }
-        .chrome-cpu {
-            color: red;
-        }
-        .firefox-memory {
-            color: blue;
-        }
-        .ie-disk {
-            color: green;
-        }
-        .chrome-network {
-            color: orange;
-        }
-        .firefox-disk {
-            color: purple;
-        }
 
+    .yellow-label {
+      background-color: yellow;
+    }
+
+    .display-values {
+      margin-top: 20px;
+    }
+
+    .chrome-cpu {
+      color: red;
+    }
+
+    .firefox-memory {
+      color: blue;
+    }
+
+    .ie-disk {
+      color: green;
+    }
+
+    .chrome-network {
+      color: orange;
+    }
+
+    .firefox-disk {
+      color: purple;
+    }
   </style>
 </head>
 
@@ -549,9 +588,12 @@
       <div class="card">
         <h3><i class="fas fa-user-plus"></i> Data Entry Form</h3>
         <form id="dataEntryForm" novalidate>
-          <label for="name">Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe" maxlength="15">
-          <label for="email">Email</label><input type="email" id="email" value="john@example.com" placeholder="john@example.com">
-          <label for="phone">Phone</label><input type="tel" id="phone" value="+1 234 567 890" placeholder="+1 234 567 890">
+          <label for="name">Full name</label><input type="text" id="name" value="John Doe" placeholder="John Doe"
+            maxlength="15">
+          <label for="email">Email</label><input type="email" id="email" value="john@example.com"
+            placeholder="john@example.com">
+          <label for="phone">Phone</label><input type="tel" id="phone" value="+1 234 567 890"
+            placeholder="+1 234 567 890">
           <label for="address">Address</label><textarea id="address" rows="2">123 Main St, City</textarea>
 
           <label>Gender</label>
@@ -582,7 +624,7 @@
         <h3><i class="fas fa-caret-down"></i> Dropdowns & more</h3>
         <label>Country</label>
         <select id="country">
-          <option value="india" >India</option>
+          <option value="india">India</option>
           <option value="usa">USA</option>
           <option value="uk">UK</option>
           <option value="germany">Germany</option>
@@ -671,7 +713,7 @@
     </div>
 
     <!-- DATE PICKERS (3 columns) -->
-<div class="grid-3">
+    <div class="grid-3">
 
       <div class="card">
         <h3><i class="fas fa-calendar-alt"></i>Date Picker (with navigation)</h3>
@@ -742,7 +784,7 @@
 
 
     <!-- TABLES : static + dynamic CRUD -->
-  <div id="tables"></div>
+    <div id="tables"></div>
 
     <!-- STATIC WEB TABLE -->
     <div class="card" style="margin-bottom: 28px;">
@@ -837,7 +879,8 @@
         </thead>
         <tbody id="rows"></tbody>
       </table>
-      <div class="display-values" id="displayValues" style="margin-top: 16px; font-size: 0.95rem; color: #334155;"></div>
+      <div class="display-values" id="displayValues" style="margin-top: 16px; font-size: 0.95rem; color: #334155;">
+      </div>
     </div>
 
 
@@ -867,6 +910,17 @@
       <div class="card">
         <h3><i class="fas fa-play"></i> Toggle Button</h3>
         <button id="toggleBtn" class="btn btn-primary" onclick="toggleButton(this)">Start</button>
+        <button id="rightClickBtn" class="btn btn-outline context-menu-one" type="button" style="margin-left:8px;">Right
+          Click Me</button>
+        <div id="customContextMenu" class="custom-context-menu" hidden>
+          <button class="ctx-item" type="button" data-action="Edit">Edit</button>
+          <button class="ctx-item" type="button" data-action="Cut">Cut</button>
+          <button class="ctx-item" type="button" data-action="Copy">Copy</button>
+          <button class="ctx-item" type="button" data-action="Paste">Paste</button>
+          <button class="ctx-item" type="button" data-action="Delete">Delete</button>
+          <hr style="margin: 6px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <button class="ctx-item" type="button" data-action="Quit">Quit</button>
+        </div>
       </div>
     </div>
 
@@ -894,7 +948,8 @@
       </div>
       <div class="card">
         <h3><i class="fas fa-download"></i> File Download</h3>
-        <button class="btn btn-primary" onclick="downloadFile()"><i class="fas fa-file-download"></i> Download File</button>
+        <button class="btn btn-primary" onclick="downloadFile()"><i class="fas fa-file-download"></i> Download
+          File</button>
         <button class="btn btn-outline"
           onclick="window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank')">Open
           PDF</button>
@@ -908,6 +963,7 @@
         <h3><i class="fas fa-info-circle"></i> Interactive Tooltip</h3>
         <span title="This is a tooltip" style="background:#eef2f8; padding:6px 18px; border-radius:40px;">Hover
           me</span>
+
       </div>
 
 
@@ -971,7 +1027,7 @@
             </svg>
           </div>
 
-         <!-- <div class="svg-section star-rating">
+          <!-- <div class="svg-section star-rating">
            <p class="svg-label">5-Star Rating</p>
              <svg viewBox="0 0 250 50" style="border: 1px solid #e2e8f0; border-radius: 8px;">
               <polygon points="25,10 30,25 45,25 32,35 37,50 25,40 13,50 18,35 5,25 20,25" fill="#fbbf24" />
@@ -988,7 +1044,7 @@
     </div>
 
     <!-- INTERACTIONS: hover, double click, drag & drop, slider -->
-    
+
     <div class="grid-3 compact-grid">
       <div class="card">
         <h3><i class="fas fa-hand-pointer"></i> Hover & Double Click</h3>
@@ -1016,15 +1072,6 @@
           <div style="background:#e2e8f0; padding:10px 24px; border-radius:40px;"
             ondrop="event.preventDefault(); alert('Dropped!')" ondragover="event.preventDefault()">Drop zone</div>
         </div>
-        
-        <!--right click-->
-        <!--<div style="margin-top:18px;">  </div>
-        <h3><i class="fas fa-mouse-pointer"></i> Right Click/Context Menu</h3>
-        <div style="display:flex; gap:12px; flex-wrap:wrap;">
-         <span class="context-menu-one btn btn-neutral">right click me</span>
-        </div>-->
-
-
         <!--slider -->
       </div>
       <div class="card">
@@ -1050,12 +1097,13 @@
     </div>
 
     <hr>
-    <div style="text-align:center; color:#64748b; padding:20px 0;">Automation Playground <a href="https://www.youtube.com/@sdetpavan" target="_blank">@SDET-QA By Pavan</a></div>
+    <div style="text-align:center; color:#64748b; padding:20px 0;">Automation Playground <a
+        href="https://www.youtube.com/@sdetpavan" target="_blank">@SDET-QA By Pavan</a></div>
   </div>
 
   <script>
 
-// Table CRUD
+    // Table CRUD
 
     function deleteRow(btn) {
       if (confirm('Delete row?')) btn.closest('tr').remove();
@@ -1091,8 +1139,8 @@
         overlay.style.display = 'none';
       }
     }
-    
-  function newwindow() {
+
+    function newwindow() {
       const screenWidth = screen.availWidth;
       const screenHeight = screen.availHeight;
 
@@ -1121,7 +1169,7 @@
 
 
 
- // Dynamic system process table
+    // Dynamic system process table
     const processes = [
       { name: 'Internet Explorer' },
       { name: 'Chrome' },
@@ -1203,7 +1251,7 @@
     function toggleButton(btn) {
       btn.textContent = btn.textContent === 'Start' ? 'Stop' : 'Start';
       btn.classList.toggle('btn-danger');
-    
+
     }
     function downloadFile() {
       const blob = new Blob(['Hello, this is a sample file for automation download.'], { type: 'text/plain' });
@@ -1294,7 +1342,7 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       createTable();
       const nameInput = document.getElementById('name');
       const phoneInput = document.getElementById('phone');
@@ -1362,29 +1410,30 @@
     });
 
     //Right click functionality
-     $(function() {
-        $.contextMenu({
-            selector: '.context-menu-one', 
-            callback: function(key, options) {
-                var m = "clicked: " + key;
-                window.console && console.log(m) || alert(m); 
-            },
-            items: {
-                "edit": {name: "Edit", icon: "edit"},
-                "cut": {name: "Cut", icon: "cut"},
-               copy: {name: "Copy", icon: "copy"},
-                "paste": {name: "Paste", icon: "paste"},
-                "delete": {name: "Delete", icon: "delete"},
-                "sep1": "---------",
-                "quit": {name: "Quit", icon: function(){
-                    return 'context-menu-icon context-menu-icon-quit';
-                }}
-            }
-        });
+    document.addEventListener('DOMContentLoaded', function () {
+      const rightClickBtn = document.getElementById('rightClickBtn');
+      const customContextMenu = document.getElementById('customContextMenu');
 
-        $('.context-menu-one').on('click', function(e){
-            console.log('clicked', this);
-        })    
+      if (!rightClickBtn || !customContextMenu) return;
+
+      rightClickBtn.addEventListener('contextmenu', function (event) {
+        event.preventDefault();
+        customContextMenu.style.display = 'block';
+        customContextMenu.style.left = `${Math.min(event.clientX, window.innerWidth - 180)}px`;
+        customContextMenu.style.top = `${Math.min(event.clientY, window.innerHeight - 220)}px`;
+      });
+
+      document.addEventListener('click', function () {
+        customContextMenu.style.display = 'none';
+      });
+
+      customContextMenu.querySelectorAll('.ctx-item').forEach(function (item) {
+        item.addEventListener('click', function (event) {
+          event.stopPropagation();
+          customContextMenu.style.display = 'none';
+          alert(`Selected: ${this.getAttribute('data-action')}`);
+        });
+      });
     });
 
 
