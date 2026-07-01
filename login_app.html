@@ -1,400 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookie Auth Demo</title>
-  <!-- Font Awesome for icons (optional but adds a nice touch) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-    body {
-      background: linear-gradient(145deg, #f5f7fc 0%, #e9ecf3 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-    .card {
-      background: rgba(255,255,255,0.75);
-      backdrop-filter: blur(8px);
-      border-radius: 2.5rem;
-      box-shadow: 0 20px 40px -12px rgba(0,20,40,0.35), 0 8px 24px -6px rgba(0,0,0,0.1);
-      padding: 2.5rem 2.8rem;
-      max-width: 480px;
-      width: 100%;
-      transition: 0.2s;
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    h1 {
-      font-weight: 600;
-      font-size: 1.9rem;
-      letter-spacing: -0.01em;
-      color: #0b1a33;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.2rem;
-      margin-bottom: 0.5rem;
-    }
-    h1 i {
-      color: #2a6df4;
-      font-size: 1.8rem;
-    }
-    .sub {
-      color: #2c3e5c;
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-      border-left: 4px solid #2a6df4;
-      padding-left: 0.9rem;
-      background: rgba(42,109,244,0.04);
-      border-radius: 0 8px 8px 0;
-    }
-    .form-group {
-      margin-bottom: 1.4rem;
-    }
-    label {
-      display: block;
-      font-weight: 500;
-      color: #1f334f;
-      margin-bottom: 0.4rem;
-      font-size: 0.9rem;
-      letter-spacing: 0.3px;
-    }
-    .input-icon {
-      position: relative;
-    }
-    .input-icon i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6b7f9b;
-      font-size: 1rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.8rem 1rem 0.8rem 2.8rem;
-      border: 1px solid #d7dfe9;
-      border-radius: 60px;
-      font-size: 1rem;
-      background: white;
-      transition: 0.15s;
-      outline: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    input:focus {
-      border-color: #2a6df4;
-      box-shadow: 0 0 0 3px rgba(42,109,244,0.15);
-    }
-    .btn {
-      width: 100%;
-      background: #1f3a6b;
-      border: none;
-      color: white;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 0.85rem;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      background: linear-gradient(135deg, #1f3a6b, #2a4d8a);
-      box-shadow: 0 6px 14px rgba(26, 67, 143, 0.25);
-      margin-top: 0.5rem;
-      letter-spacing: 0.3px;
-    }
-    .btn:hover {
-      transform: scale(1.01);
-      background: linear-gradient(135deg, #1a3160, #25447a);
-      box-shadow: 0 8px 18px rgba(26, 67, 143, 0.35);
-    }
-    .btn-logout {
-      background: #d34b4b;
-      background: linear-gradient(135deg, #b13e3e, #962f2f);
-      box-shadow: 0 6px 14px rgba(179, 50, 50, 0.25);
-      margin-top: 1.8rem;
-    }
-    .btn-logout:hover {
-      background: linear-gradient(135deg, #9e3535, #822626);
-      box-shadow: 0 8px 18px rgba(179, 50, 50, 0.35);
-    }
-    .error-msg {
-      background: #fee9e7;
-      color: #b3403a;
-      padding: 0.7rem 1.2rem;
-      border-radius: 60px;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      border-left: 5px solid #d1453b;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .dashboard-content {
-      padding: 0.2rem 0;
-    }
-    .greeting {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #0b1a33;
-      margin-bottom: 0.2rem;
-    }
-    .greeting small {
-      font-weight: 400;
-      font-size: 1rem;
-      color: #2c4b74;
-      margin-left: 0.5rem;
-    }
-    .info-card {
-      background: rgba(255,255,255,0.5);
-      border-radius: 28px;
-      padding: 1.5rem 1.8rem;
-      margin: 1.5rem 0 0.8rem;
-      border: 1px solid rgba(255,255,255,0.6);
-      backdrop-filter: blur(4px);
-    }
-    .info-card i {
-      color: #2a6df4;
-      margin-right: 0.6rem;
-      width: 1.6rem;
-    }
-    .info-card p {
-      display: flex;
-      align-items: center;
-      color: #1f334f;
-      margin: 0.5rem 0;
-    }
-    .cookie-badge {
-      background: #e0e8f5;
-      border-radius: 60px;
-      padding: 0.25rem 1rem;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: #1f3a6b;
-      display: inline-block;
-      margin-top: 0.5rem;
-    }
-    .hidden {
-      display: none !important;
-    }
-    .flex-row {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      flex-wrap: wrap;
-    }
-    .mt-2 { margin-top: 1.2rem; }
-    .text-center { text-align: center; }
-    .text-muted { color: #3d5779; }
-    hr { border: none; border-top: 1px solid rgba(0,0,0,0.05); margin: 1rem 0; }
-    i.fa-solid { font-size: 1.1rem; }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth Demo · Cookie + Storage</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fc 0%, #e9ecf3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(8px);
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.35), 0 8px 24px -6px rgba(0, 0, 0, 0.1);
+            padding: 2.2rem 2.5rem;
+            max-width: 520px;
+            width: 100%;
+            transition: 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 1.9rem;
+            letter-spacing: -0.01em;
+            color: #0b1a33;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        h1 i {
+            color: #2a6df4;
+            font-size: 1.8rem;
+        }
+
+        .sub {
+            color: #2c3e5c;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border-left: 4px solid #2a6df4;
+            padding-left: 0.9rem;
+            background: rgba(42, 109, 244, 0.04);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #1f334f;
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7f9b;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.8rem;
+            border: 1px solid #d7dfe9;
+            border-radius: 60px;
+            font-size: 1rem;
+            background: white;
+            transition: 0.15s;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        input:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 3px rgba(42, 109, 244, 0.15);
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.85rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            letter-spacing: 0.3px;
+            background: linear-gradient(135deg, #1f3a6b, #2a4d8a);
+            box-shadow: 0 6px 14px rgba(26, 67, 143, 0.25);
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.01);
+            background: linear-gradient(135deg, #1a3160, #25447a);
+            box-shadow: 0 8px 18px rgba(26, 67, 143, 0.35);
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #b13e3e, #962f2f);
+            box-shadow: 0 6px 14px rgba(179, 50, 50, 0.25);
+            margin-top: 1.8rem;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #9e3535, #822626);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #1f3a6b;
+            color: #1f3a6b;
+            box-shadow: none;
+            margin-top: 0.8rem;
+            padding: 0.6rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-outline:hover {
+            background: #eef3fc;
+            transform: scale(1.01);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .error-msg {
+            background: #fee9e7;
+            color: #b3403a;
+            padding: 0.7rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid #d1453b;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .dashboard-content {
+            padding: 0.2rem 0;
+        }
+
+        .greeting {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #0b1a33;
+            margin-bottom: 0.2rem;
+        }
+
+        .greeting small {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #2c4b74;
+            margin-left: 0.5rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 28px;
+            padding: 1.2rem 1.6rem;
+            margin: 1.2rem 0 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+        }
+
+        .info-card p {
+            display: flex;
+            align-items: center;
+            color: #1f334f;
+            margin: 0.5rem 0;
+        }
+
+        .info-card i {
+            color: #2a6df4;
+            margin-right: 0.6rem;
+            width: 1.6rem;
+        }
+
+        .badge {
+            background: #e0e8f5;
+            border-radius: 60px;
+            padding: 0.25rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1f3a6b;
+            display: inline-block;
+            margin-top: 0.4rem;
+        }
+
+        .storage-selector {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin: 1rem 0 0.2rem;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 0.8rem 1rem;
+            border-radius: 60px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .storage-selector label {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #1f334f;
+            cursor: pointer;
+            background: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid #d7dfe9;
+            transition: 0.1s;
+        }
+
+        .storage-selector label.active {
+            background: #1f3a6b;
+            color: white;
+            border-color: #1f3a6b;
+        }
+
+        .storage-selector input[type="radio"] {
+            accent-color: #1f3a6b;
+            width: 14px;
+            height: 14px;
+            margin-right: 4px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .flex-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+
+        .mt-2 {
+            margin-top: 1.2rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #3d5779;
+            font-size: 0.8rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            margin: 0.8rem 0;
+        }
+
+        i.fa-solid {
+            font-size: 1.1rem;
+        }
+
+        .storage-label {
+            font-weight: 500;
+            background: #eef3fa;
+            padding: 0.1rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1f3a6b;
+        }
+
+        .flex-space {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        code {
+            background: #eef3fa;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-<div class="card" id="appContainer">
-  <!-- LOGIN CARD -->
-  <div id="loginView">
-    <h1><i class="fas fa-lock"></i> Sign in</h1>
-    <div class="sub">🔐 Use <strong>admin</strong> / <strong>admin123</strong></div>
-    
-    <div id="loginError" class="error-msg hidden">
-      <i class="fas fa-exclamation-circle"></i> <span id="errorText">Invalid credentials</span>
+    <div class="card" id="appContainer">
+        <!-- LOGIN VIEW -->
+        <div id="loginView">
+            <h1><i class="fas fa-lock"></i> Sign in</h1>
+            <div class="sub">🔐 <strong>admin</strong> / <strong>admin123</strong> · choose storage below</div>
+
+            <div id="loginError" class="error-msg hidden">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText">Invalid credentials</span>
+            </div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="username"><i class="fas fa-user" style="margin-right: 6px;"></i> Username</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Enter username" value="admin" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-key" style="margin-right: 6px;"></i> Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="password" placeholder="Enter password" value="admin123" required />
+                    </div>
+                </div>
+
+                <!-- Storage selector -->
+                <div class="storage-selector">
+                    <span style="font-weight: 500; font-size:0.85rem; color:#1f334f; margin-right:0.2rem;"><i class="fas fa-database"></i> Store:</span>
+                    <label class="active">
+                        <input type="radio" name="storageMethod" value="cookie" checked /> 🍪 Cookie
+                    </label>
+                    <label>
+                        <input type="radio" name="storageMethod" value="localStorage" /> 💾 Local
+                    </label>
+                    <label>
+                        <input type="radio" name="storageMethod" value="sessionStorage" /> ⏳ Session
+                    </label>
+                </div>
+
+                <button type="submit" class="btn"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
+            </form>
+            <div class="text-center text-muted" style="margin-top: 1.2rem;">
+                <i class="fas fa-cookie"></i> Session persists based on your choice
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboardView" class="hidden">
+            <div class="dashboard-content">
+                <div class="flex-space">
+                    <div class="greeting">
+                        <i class="fas fa-user-circle" style="color: #1f3a6b;"></i>
+                        Dashboard <small>Welcome</small>
+                    </div>
+                    <span id="activeStorageBadge" class="storage-label"><i class="fas fa-check-circle"></i> Cookie</span>
+                </div>
+                <div class="sub" style="margin-bottom: 0.8rem;">
+                    <i class="fas fa-check-circle" style="color: #1d8a4f;"></i> You are authenticated via <span id="activeStorageName">cookie</span>.
+                </div>
+                <div class="info-card">
+                    <p><i class="fas fa-user"></i> <strong>Logged in as:</strong> <span id="displayUser">admin</span></p>
+                    <p><i class="fas fa-clock"></i> <strong>Session:</strong> <span id="sessionType">Persistent</span></p>
+                    <p><i class="fas fa-database"></i> <strong>Storage:</strong> <span id="storageDetail">Cookie (7d)</span></p>
+                    <div class="badge"><i class="fas fa-check-circle" style="color: #1d8a4f;"></i> Active session</div>
+                </div>
+                <hr />
+                <div style="color: #2c4b74; font-size: 0.95rem; padding: 0.2rem 0;">
+                    <i class="fas fa-info-circle"></i> Close/reopen tab to test persistence.
+                </div>
+                <button id="logoutBtn" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Logout & clear storage</button>
+            </div>
+        </div>
     </div>
 
-    <form id="loginForm" autocomplete="off">
-      <div class="form-group">
-        <label for="username"><i class="fas fa-user" style="margin-right: 6px;"></i> Username</label>
-        <div class="input-icon">
-          <i class="fas fa-user"></i>
-          <input type="text" id="username" placeholder="Enter username" value="admin" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="password"><i class="fas fa-key" style="margin-right: 6px;"></i> Password</label>
-        <div class="input-icon">
-          <i class="fas fa-key"></i>
-          <input type="password" id="password" placeholder="Enter password" value="admin123" required>
-        </div>
-      </div>
-      <button type="submit" class="btn"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
-    </form>
-    <div class="text-center text-muted" style="margin-top: 1.2rem; font-size: 0.8rem;">
-      <i class="fas fa-cookie"></i> Session stored in cookie
-    </div>
-  </div>
+    <script>
+        (function() {
+            // ----- constants -----
+            const COOKIE_NAME = 'auth_session';
+            const COOKIE_EXPIRY_DAYS = 7;
+            const STORAGE_KEY = 'auth_session';
 
-  <!-- DASHBOARD CARD -->
-  <div id="dashboardView" class="hidden">
-    <div class="dashboard-content">
-      <div class="flex-row" style="justify-content: space-between;">
-        <div class="greeting">
-          <i class="fas fa-user-circle" style="color: #1f3a6b;"></i> 
-          Dashboard <small>Welcome</small>
-        </div>
-        <i class="fas fa-cookie-bite" style="font-size: 1.6rem; color: #b47d3a;"></i>
-      </div>
-      <div class="sub" style="margin-bottom: 0.8rem;">
-        <i class="fas fa-check-circle" style="color: #1d8a4f;"></i> You are authenticated via cookie.
-      </div>
-      <div class="info-card">
-        <p><i class="fas fa-user"></i> <strong>Logged in as:</strong> <span id="displayUser">admin</span></p>
-        <p><i class="fas fa-clock"></i> <strong>Session:</strong> Persistent (cookie)</p>
-        <p><i class="fas fa-cookie"></i> <strong>Cookie name:</strong> <code style="background: #eef3fa; padding: 0.1rem 0.6rem; border-radius: 20px;">auth_session</code></p>
-        <div class="cookie-badge"><i class="fas fa-check-circle" style="color: #1d8a4f;"></i> Active session</div>
-      </div>
-      <hr>
-      <div style="color: #2c4b74; font-size: 0.95rem; padding: 0.2rem 0;">
-        <i class="fas fa-info-circle"></i> Close and reopen the browser tab to test auto-login.
-      </div>
-      <button id="logoutBtn" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Logout & clear cookie</button>
-    </div>
-  </div>
-</div>
+            // DOM refs
+            const loginView = document.getElementById('loginView');
+            const dashboardView = document.getElementById('dashboardView');
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginError = document.getElementById('loginError');
+            const errorText = document.getElementById('errorText');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const displayUser = document.getElementById('displayUser');
 
-<script>
-  (function() {
-    // ---------- constants ----------
-    const COOKIE_NAME = 'auth_session';
-    const COOKIE_EXPIRY_DAYS = 7;     // persistent session
+            // storage badge elements
+            const activeStorageBadge = document.getElementById('activeStorageBadge');
+            const activeStorageName = document.getElementById('activeStorageName');
+            const sessionType = document.getElementById('sessionType');
+            const storageDetail = document.getElementById('storageDetail');
 
-    // DOM refs
-    const loginView = document.getElementById('loginView');
-    const dashboardView = document.getElementById('dashboardView');
-    const loginForm = document.getElementById('loginForm');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const loginError = document.getElementById('loginError');
-    const errorText = document.getElementById('errorText');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const displayUser = document.getElementById('displayUser');
+            // radio buttons
+            const storageRadios = document.querySelectorAll('input[name="storageMethod"]');
 
-    // ---------- helper functions ----------
-    function setCookie(name, value, days) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      const expires = `expires=${date.toUTCString()}`;
-      // path=/ makes cookie available across whole app
-      document.cookie = `${name}=${value}; ${expires}; path=/; SameSite=Lax`;
-    }
+            // ----- AuthManager: unified storage handling -----
+            const AuthManager = {
+                // Write authentication data to the selected storage
+                setAuthData(value) {
+                    const method = this._getSelectedStorage();
+                    if (method === 'cookie') {
+                        const date = new Date();
+                        date.setTime(date.getTime() + (COOKIE_EXPIRY_DAYS * 24 * 60 * 60 * 1000));
+                        document.cookie = `${COOKIE_NAME}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Lax`;
+                    } else if (method === 'localStorage') {
+                        localStorage.setItem(STORAGE_KEY, value);
+                    } else if (method === 'sessionStorage') {
+                        sessionStorage.setItem(STORAGE_KEY, value);
+                    }
+                },
 
-    function getCookie(name) {
-      const cookies = document.cookie.split('; ');
-      for (let cookie of cookies) {
-        const [key, val] = cookie.split('=');
-        if (key === name) return val;
-      }
-      return null;
-    }
+                // Read authentication data: check cookie → localStorage → sessionStorage
+                // Returns { value, method } or null if not found
+                getAuthData() {
+                    // 1. Check Cookie
+                    const cookies = document.cookie.split('; ');
+                    for (const cookie of cookies) {
+                        const [key, value] = cookie.split('=');
+                        if (key === COOKIE_NAME && value === 'authenticated') {
+                            return { value, method: 'cookie' };
+                        }
+                    }
 
-    function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
-    }
+                    // 2. Check Local Storage
+                    const localValue = localStorage.getItem(STORAGE_KEY);
+                    if (localValue === 'authenticated') {
+                        return { value: localValue, method: 'localStorage' };
+                    }
 
-    // ---------- authentication check ----------
-    function checkAuthAndRedirect() {
-      const session = getCookie(COOKIE_NAME);
-      if (session === 'authenticated') {
-        // valid session → show dashboard
-        showDashboard();
-        return true;
-      } else {
-        // no cookie or invalid → show login
-        showLogin();
-        return false;
-      }
-    }
+                    // 3. Check Session Storage
+                    const sessionValue = sessionStorage.getItem(STORAGE_KEY);
+                    if (sessionValue === 'authenticated') {
+                        return { value: sessionValue, method: 'sessionStorage' };
+                    }
 
-    // ---------- UI switch ----------
-    function showDashboard() {
-      loginView.classList.add('hidden');
-      dashboardView.classList.remove('hidden');
-      // display user (hardcoded for demo)
-      displayUser.textContent = 'admin';
-      // hide any lingering error
-      loginError.classList.add('hidden');
-    }
+                    return null;
+                },
 
-    function showLogin() {
-      loginView.classList.remove('hidden');
-      dashboardView.classList.add('hidden');
-      // clear error message
-      loginError.classList.add('hidden');
-    }
+                // Clear authentication data from ALL storage types
+                clearAuthData() {
+                    // Clear cookie
+                    document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+                    // Clear localStorage
+                    localStorage.removeItem(STORAGE_KEY);
+                    // Clear sessionStorage
+                    sessionStorage.removeItem(STORAGE_KEY);
+                },
 
-    // ---------- login handler ----------
-    function handleLogin(e) {
-      e.preventDefault();
-      
-      const username = usernameInput.value.trim();
-      const password = passwordInput.value.trim();
+                // Get the currently selected storage method from radio buttons
+                _getSelectedStorage() {
+                    for (const radio of storageRadios) {
+                        if (radio.checked) return radio.value;
+                    }
+                    return 'cookie'; // fallback
+                },
 
-      // hardcoded credentials
-      const valid = (username === 'admin' && password === 'admin123');
+                // Get human-readable storage info for a given method
+                getStorageInfo(method) {
+                    if (method === 'cookie') return { label: 'Cookie', detail: 'Cookie (7d)', type: 'Persistent' };
+                    if (method === 'localStorage') return { label: 'Local Storage', detail: 'LocalStorage (persistent)',
+                        type: 'Persistent' };
+                    if (method === 'sessionStorage') return { label: 'Session Storage', detail: 'SessionStorage (tab)',
+                        type: 'Session (tab)' };
+                    return { label: 'Cookie', detail: 'Cookie (7d)', type: 'Persistent' };
+                }
+            };
 
-      if (valid) {
-        // set persistent cookie
-        setCookie(COOKIE_NAME, 'authenticated', COOKIE_EXPIRY_DAYS);
-        // hide error
-        loginError.classList.add('hidden');
-        // navigate to dashboard
-        showDashboard();
-      } else {
-        // show error
-        errorText.textContent = 'Invalid username or password. Try admin/admin123';
-        loginError.classList.remove('hidden');
-        // ensure we stay on login view
-        showLogin();
-      }
-    }
+            // ----- UI update with storage info (uses AuthManager) -----
+            function updateDashboardStorageInfo() {
+                const auth = AuthManager.getAuthData();
+                if (!auth) return;
 
-    // ---------- logout handler ----------
-    function handleLogout() {
-      deleteCookie(COOKIE_NAME);
-      // force redirect to login
-      showLogin();
-      // clear any error message
-      loginError.classList.add('hidden');
-      // reset form fields (optional, but nice)
-      usernameInput.value = 'admin';
-      passwordInput.value = 'admin123';
-    }
+                const method = auth.method;
+                const info = AuthManager.getStorageInfo(method);
+                activeStorageBadge.textContent = ` ${info.label}`;
+                activeStorageBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${info.label}`;
+                activeStorageName.textContent = info.label.toLowerCase();
+                sessionType.textContent = info.type;
+                storageDetail.textContent = info.detail;
+            }
 
-    // ---------- attach event listeners ----------
-    loginForm.addEventListener('submit', handleLogin);
-    logoutBtn.addEventListener('click', handleLogout);
+            // ----- auth check: returns true if authenticated -----
+            function checkAuthAndRedirect() {
+                const auth = AuthManager.getAuthData();
+                if (auth) {
+                    showDashboard();
+                    updateDashboardStorageInfo();
+                    return true;
+                }
+                showLogin();
+                return false;
+            }
 
-    // ---------- on page load: check cookie ----------
-    window.addEventListener('DOMContentLoaded', function() {
-      // if cookie exists → dashboard, else login
-      const session = getCookie(COOKIE_NAME);
-      if (session === 'authenticated') {
-        showDashboard();
-      } else {
-        showLogin();
-        // prefill demo credentials (optional)
-        usernameInput.value = 'admin';
-        passwordInput.value = 'admin123';
-      }
-    });
+            // ----- UI switches -----
+            function showDashboard() {
+                loginView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                loginError.classList.add('hidden');
+                displayUser.textContent = 'admin';
+                // update storage info after showing dashboard
+                updateDashboardStorageInfo();
+            }
 
-    // (Optional) for demo: if someone manually deletes cookie via devtools, 
-    // we don't auto-refresh, but next reload will handle it.
-    // Also handle edge: if user is on dashboard and cookie gets deleted (via other tab)
-    // we don't force logout, but that's fine for demo.
-    // For extra safety, we could check on visibility change, but not needed.
+            function showLogin() {
+                loginView.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+                loginError.classList.add('hidden');
+            }
 
-    // expose to console for fun (optional)
-    window.__authDemo = { getCookie, setCookie, deleteCookie, checkAuthAndRedirect };
-  })();
-</script>
+            // ----- login handler -----
+            function handleLogin(e) {
+                e.preventDefault();
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                if (username === 'admin' && password === 'admin123') {
+                    AuthManager.setAuthData('authenticated');
+                    loginError.classList.add('hidden');
+                    showDashboard();
+                    updateDashboardStorageInfo();
+                } else {
+                    errorText.textContent = 'Invalid credentials. Use admin/admin123';
+                    loginError.classList.remove('hidden');
+                    showLogin();
+                }
+            }
+
+            // ----- logout handler -----
+            function handleLogout() {
+                AuthManager.clearAuthData();
+                showLogin();
+                loginError.classList.add('hidden');
+                usernameInput.value = 'admin';
+                passwordInput.value = 'admin123';
+            }
+
+            // ----- radio change: re-check auth when storage changes -----
+            function onStorageChange() {
+                // If we are on dashboard, re-check if the new storage has valid auth
+                if (!dashboardView.classList.contains('hidden')) {
+                    const auth = AuthManager.getAuthData();
+                    if (!auth) {
+                        // no valid session in newly selected storage → logout
+                        showLogin();
+                        loginError.classList.add('hidden');
+                    } else {
+                        // still authenticated, update info
+                        updateDashboardStorageInfo();
+                    }
+                }
+                // if on login, nothing special
+            }
+
+            // attach radio change listeners
+            storageRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // update active visual
+                    document.querySelectorAll('.storage-selector label').forEach(lbl => lbl.classList.remove(
+                    'active'));
+                    if (this.checked) {
+                        this.closest('label').classList.add('active');
+                    }
+                    onStorageChange();
+                });
+            });
+
+            // ----- attach events -----
+            loginForm.addEventListener('submit', handleLogin);
+            logoutBtn.addEventListener('click', handleLogout);
+
+            // ----- DOMContentLoaded: auto-check authentication -----
+            window.addEventListener('DOMContentLoaded', () => {
+                // Ensure default radio is visually active
+                const defaultRadio = document.querySelector('input[name="storageMethod"][value="cookie"]');
+                if (defaultRadio) {
+                    defaultRadio.checked = true;
+                    defaultRadio.closest('label').classList.add('active');
+                }
+
+                // Auto-check authentication
+                checkAuthAndRedirect();
+
+                // Pre-fill demo credentials (if on login view)
+                usernameInput.value = 'admin';
+                passwordInput.value = 'admin123';
+            });
+
+            // Expose AuthManager for console debugging (optional)
+            window.__authDemo = {
+                AuthManager,
+                checkAuthAndRedirect,
+                updateDashboardStorageInfo
+            };
+        })();
+    </script>
 </body>
 </html>
